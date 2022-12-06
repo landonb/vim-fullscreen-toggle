@@ -130,6 +130,16 @@ let s:is_toggle_enabled = 0
 noremap <silent> <unique> <script> <Plug>ToggleFullscreen_Fill :call <SID>ToggleResizeWindow(0)<CR>
 noremap <silent> <unique> <script> <Plug>ToggleFullscreen_RightHalf :call <SID>ToggleResizeWindow(1)<CR>
 
+let s:ignore_next_resized = 0
+autocmd VimResized *
+  \ if (&lines == 999) || (&columns == 999) |
+  \   let s:ignore_next_resized = 1 |
+  \ elseif (s:ignore_next_resized == 0) |
+  \   let s:is_toggle_enabled = 0 |
+  \ else |
+  \   let s:ignore_next_resized = 0 |
+  \ endif
+
 function! s:CreateMaps()
   nmap <F11> <Plug>ToggleFullscreen_Fill
   imap <F11> <C-O><Plug>ToggleFullscreen_Fill
