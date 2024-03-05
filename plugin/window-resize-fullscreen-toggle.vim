@@ -80,13 +80,13 @@
 " YOU: Uncomment next 'unlet', then <F9> to reload this file.
 "      (Iff: https://github.com/landonb/vim-source-reloader)
 "
-" silent! unlet g:loaded_plugin_view_fullscreen_toggle
+" silent! unlet g:loaded_plugin_vim_fullscreen_toggle
 
-if exists('g:loaded_plugin_view_fullscreen_toggle') || &cp || v:version < 800
+if exists('g:loaded_plugin_vim_fullscreen_toggle') || &cp || v:version < 800
   finish
 endif
 
-let g:loaded_plugin_view_fullscreen_toggle = 1
+let g:loaded_plugin_vim_fullscreen_toggle = 1
 
 " +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ "
 
