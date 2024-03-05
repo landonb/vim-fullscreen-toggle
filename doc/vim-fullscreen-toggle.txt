@@ -1,0 +1,52 @@
+*vim-fullscreen-toggle.txt*	For Vim version 7.4.	Last change: 2024 Mar 04
+
+Vim Fullscreen Toggle Commands and Features~
+
+FULLSCREEN TOGGLE COMMANDS		*vim-fs-toggle*
+
+1. About This Plugin			|vim-fs-toggle|
+2. Fullscreen Toggle Commands		|vim-fs-toggle-cmds|
+
+==============================================================================
+1. About This Plugin			*vim-fs-toggle*
+
+Display-aware Vim fullscreen toggle.
+
+This plugin is a dual-display-aware version of an old trick:
+
+ `set columns=999 lines=999`
+
+which will resize a gVim/MacVim window to fill the screen.
+
+But that trick breaks when there's more than one monitor attached.
+
+This plugin restricts the resize to just one monitor, and
+it also adjusts vertical splits to be equal widths.
+
+Project page: https://github.com/landonb/vim-fullscreen-toggle
+
+==============================================================================
+2. Fullscreen Toggle Commands		*vim-fs-toggle-cmds*
+
+Resize gVim/MacVim window~
+
+				*<F11>*
+<F11>			Change gVim/MacVim window dimensions.
+			Cycles through 3 different window sizes:
+			fullscreen → mostly fullscreen → original size → (repeat).
+			If the original size when user first presses `<F11>`
+			is already fullscreen or mostly fullscreen, the plugin
+			will only cycle through 2 sizes: fullscreen → mostly
+
+			
+				*<Shift-F11>*
+<Shift-F11>>		Restrict to right-half of display.
+			Like `<F11>`, cycles through 3 different window sizes,
+			but sets window width and position to right-half of display.
+
+Override~
+
+To use your own mappings, define `g:TBVIMCreateDefaultMappings = 0` to
+inhibit the `<F11>` and `<S-F11>` mappings, and then define your own.
+
+ vim:tw=78:ts=8:ft=help:norl:
