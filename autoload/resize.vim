@@ -120,6 +120,11 @@ let s:full_win_x = 0
 let s:full_win_y = 0
 let s:full_vim_x = 0
 let s:full_vim_y = 0
+"
+let s:part_win_x = 0
+let s:part_win_y = 0
+let s:part_vim_x = 0
+let s:part_vim_y = 0
 
 let s:state_toggle = 0
 let s:mutex_ignore_next_vimresized = 0
@@ -150,30 +155,29 @@ function! resize#ToggleResizeWindow(sticky_x)
           \ .. 'getwinpos: (' .. getwinposx() .. ', ' .. getwinposy() .. ') / '
           \ .. 'size: (' .. &columns .. ' x ' .. &lines .. ')'
       endif
+
       let s:state_toggle = 0
     endif
   endif
 
   " Check if next state restores original user dimensions (state_toggle == 2),
   " unless those original dimensions match the current window (1st s:user_*
-  " block) or if those original dimenstions match full screen (2nd s:user_*
+  " block) or if those original dimensions match full screen (2nd s:user_*
   " block). I.e., skip this state if user dimensions same as one of the other
   " 2 states.
   if (s:state_toggle == 2)
     \ && (s:user_vim_x > 0)
     \ && (s:user_vim_y > 0)
     \ && (!(1
-      \ && (s:user_win_x == getwinposx())
-      \ && (s:user_win_y == getwinposy())
-      \ && (s:user_vim_x == &columns)
-      \ && (s:user_vim_y == &lines)))
+      \ && (s:user_win_x == s:part_win_x)
+      \ && (s:user_win_y == s:part_win_y)
+      \ && (s:user_vim_x == s:part_vim_x)
+      \ && (s:user_vim_y == s:part_vim_y)))
     \ && (!(1
       \ && (s:user_win_x == s:full_win_x)
       \ && (s:user_win_y == s:full_win_y)
       \ && (s:user_vim_x == s:full_vim_x)
       \ && (s:user_vim_y == s:full_vim_y)))
-
-    let s:state_toggle = 0
 
     if s:trace == 1
       echom 'toggle off: user_win: (' .. s:user_win_x .. ', ' .. s:user_win_y .. ') / '
@@ -184,13 +188,30 @@ function! resize#ToggleResizeWindow(sticky_x)
 
     exec 'set columns=' .. s:user_vim_x .. ' lines=' .. s:user_vim_y
     exec 'winpos ' .. s:user_win_x .. ' ' .. s:user_win_y
+
+    let s:state_toggle = 0
   else
     let limit_w = 1
     let limit_h = 1
 
     if (abs(s:state_toggle) == 1)
-      let s:state_toggle = 2
+      " Fullscreen
+      let s:state_toggle = 1
 
+      " Set Totally Fullscreen vars
+      let limit_w = 1
+      let limit_h = 1
+    else
+      " Mostly fullscreen
+      let s:state_toggle = 0
+
+      " Remember original window dimensions.
+      let s:user_win_x = getwinposx()
+      let s:user_win_y = getwinposy()
+      let s:user_vim_x = &columns
+      let s:user_vim_y = &lines
+
+      " Set Mostly Fullscreen vars
       if exists('g:resize_fullscreen_limit_w')
         let limit_w = g:resize_fullscreen_limit_w
       else
@@ -202,13 +223,6 @@ function! resize#ToggleResizeWindow(sticky_x)
       else
         let limit_h = s:partial_h
       endif
-    else
-      let s:state_toggle = 1
-
-      let s:user_win_x = getwinposx()
-      let s:user_win_y = getwinposy()
-      let s:user_vim_x = &columns
-      let s:user_vim_y = &lines
     endif
 
     " ***
@@ -286,24 +300,33 @@ function! resize#ToggleResizeWindow(sticky_x)
     execute 'winpos ' .. xoff .. ' ' .. yoff
     "call resize#SavePrevDimensions()
 
-    if s:state_toggle == 1
+    if s:state_toggle == 0
+      let s:part_win_x = getwinposx()
+      let s:part_win_y = getwinposy()
+      let s:part_vim_x = &columns
+      let s:part_vim_y = &lines
+    elseif s:state_toggle == 1
       let s:full_win_x = getwinposx()
       let s:full_win_y = getwinposy()
       let s:full_vim_x = &columns
       let s:full_vim_y = &lines
+    endif
 
-      " If orig size was already fullscreen, than move on to next
-      " state, partial fullscreen.
-      if (1
-        \ && (s:orig_win_x == s:full_win_x)
-        \ && (s:orig_win_y == s:full_win_y)
-        \ && (s:orig_vim_x == s:full_vim_x)
-        \ && (s:orig_vim_y == s:full_vim_y))
+    " If orig size same as mostly fullscreen, means nothing changed
+    " just now, so move on to next state, fully fullscreen.
+    if (s:state_toggle == 0)
+      \ && (s:orig_win_x == s:part_win_x)
+      \ && (s:orig_win_y == s:part_win_y)
+      \ && (s:orig_vim_x == s:part_vim_x)
+      \ && (s:orig_vim_y == s:part_vim_y)
 
-        let s:state_toggle = -1
+      let s:state_toggle = -1
 
-        call resize#ToggleResizeWindow(a:sticky_x)
-      endif
+      call resize#ToggleResizeWindow(a:sticky_x)
+    elseif (s:state_toggle == 0)
+      let s:state_toggle = 1
+    elseif (s:state_toggle == 1)
+      let s:state_toggle = 2
     endif
   endif
 
