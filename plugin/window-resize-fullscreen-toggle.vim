@@ -1,15 +1,23 @@
-" GVim Fullscreen Toggle. Most useful on macOS.
 " Author: Landon Bouma <https://tallybark.com/>
-" Online: https://github.com/landonb/vim-fullscreen-toggle
+" Online: https://github.com/landonb/vim-fullscreen-toggle#💯
 " License: https://creativecommons.org/publicdomain/zero/1.0/
 "  vim:tw=0:ts=2:sw=2:et:norl:ft=vim
-" Copyright © 2011-2021 Landon Bouma.
+" Copyright © 2011-2024 Landon Bouma.
 
-" AUDIENCE: Mostly MacVim users.
+" +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ "
 
-" USAGE: Press F11 to toggle fullscreen.
+" display-aware gVim/MacVim window fullsizer and resizer
+
+" +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ "
+
+" AUDIENCE: Mostly MacVim users, but also useful for gVim with `xrandr`.
+
+" USAGE: Press F11 to resize gVim/MacVim, and cycle through sizes.
 "
-" BONUS: Try Shift-F11 to toggle tiling toward the right.
+" - BONUS: Shift-F11 toggle puts Vim in right-half of screen.
+"
+" - To use your own bindings, define g:TBVIMCreateDefaultMappings = 0
+"   to skip the <F11> and <S-F11> mappings, and then define your own.
 
 " WHY THIS PLUGIN:
 "
@@ -53,20 +61,19 @@
 "       Specifically, the Rectangle *Maximize* command works similar to
 "       this plugin. (See also *Restore* to undo the maximize.)
 "
-"   - On Windows, this plugin probably works. It did for me 10 years ago
-"     when I was a regular Cygwin user, but I haven't tested again since.
-"     But like Linux, Windows already has a comparable Maximize feature
-"     built-in, so a Windows user might not find this plugin that useful.
+"   - This plugin is untested on Windows.
 
-" NOTES: The Shift-F11 toggle may not tile to the right how you want.
-"
-"   - It works well for me on my 1920x1080 monitor with the default
-"     columns value below, but you might need to set a different value.
+" NOTES: The Shift-F11 is similar to some desktop manager mappings:
 "
 "   - On macOS, consider also the Rectangle.app *Right Half* command.
+"
+"   - On MATE, see 'Tile window to east (right) side of screen' binding.
+"
+"   - But those mechanism will not resize the Vim window panes, whereas
+"     this plugin with adjust vertical splits to equal widths.
 
-" NAMING: Perhaps to differentiate from macOS 'Full Screen Mode'
-"         this plugin should rather be called 'fillscreen'.
+" WORDS: Perhaps to differentiate from macOS 'Full Screen Mode'
+"        this plugin should rather be called 'fillscreen'.
 
 " +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ "
 
@@ -217,6 +224,8 @@ function! s:ToggleResizeWindow(sticky_x)
     "   winpos 657 0
     "   set columns=179 lines=999
     " endif
+
+    " ***
 
     let use_secondary = 0
     if exists('g:resize_fullscreen_use_secondary_display')
