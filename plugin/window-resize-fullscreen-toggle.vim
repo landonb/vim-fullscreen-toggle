@@ -235,6 +235,11 @@ function! s:ToggleResizeWindow(sticky_x)
     let dimensions = s:DisplayOffsetAndResolution(use_secondary)
     let [xoff, yoff, size_w, size_h] = dimensions
 
+    if a:sticky_x == 1
+      let limit_w = 0.5
+      let xoff = str2nr(xoff + (size_w / 2))
+    endif
+
     " MAYBE/2024-03-03: Find better way to translate display manager window
     " pixels to Vim lines and columns.
     " - Because we need both, pixels for :winpos, font units for set-columns/lines.
