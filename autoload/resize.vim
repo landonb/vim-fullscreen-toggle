@@ -361,21 +361,22 @@ function! resize#DisplayOffsetAndResolution(use_secondary) abort
   " Default, in case the command fails.
   let [xoff, yoff, dw, dh] = [0, 0, 1920, 1080]
 
-  let filter_str = "' connected primary'"
-  if a:use_secondary
-    let filter_str = "-v " .. filter_str .. " | grep ' connected '"
-  endif
+  let system_cmd = resize#SussDisplayResolutionCommand(a:use_secondary)
 
-  " Get resolution from xrandr, and match the resolution.
-  let dimensions = system("xrandr --query | grep " .. filter_str)
+  " Get resolution from xrandr/osascript, and match for the resolution.
+  let dimensions = system(system_cmd)
   if v:shell_error > 0
-    echom '- v:shell_error: ' .. v:shell_error
+    echom 'vim-fillscreen-toggle: system call failed: ' .. v:shell_error
+
     return [xoff, yoff, dw, dh]
   endif
 
-  let matches = dimensions->matchlist('\(\d\+\)x\(\d\+\)+\(\d\+\)+\(\d\+\)')
+  let pattern = resize#SussDisplayResolutionPattern()
+
+  let matches = dimensions->matchlist(pattern)
   if len(matches) == 0
-    echom '- no matches'
+    echom 'vim-fillscreen-toggle: no matches!?'
+
     return [xoff, yoff, dw, dh]
   endif
 
@@ -383,12 +384,65 @@ function! resize#DisplayOffsetAndResolution(use_secondary) abort
   " number.
   let [match_w, match_h, match_xoff, match_yoff] = matches[1:4]->map({_, match -> str2nr(match)})
   if match_w == 0 || match_h == 0
-    echom '- match size 0'
+    echom 'vim-fillscreen-toggle: match size 0!?'
+
     return [xoff, yoff, dw, dh]
   endif
 
   return [match_xoff, match_yoff, match_w, match_h]
-endfun
+endfunction
+
+function! resize#SussDisplayResolutionCommand(use_secondary) abort
+  if has("gui_gtk2") || has("gui_gtk3")
+    return resize#SussDisplayResolutionCommand_GTK(a:use_secondary)
+  elseif has("macunix")
+    return resize#SussDisplayResolutionCommand_macOS(a:use_secondary)
+  endif
+endfunction
+
+function! resize#SussDisplayResolutionPattern() abort
+  if has("gui_gtk2") || has("gui_gtk3")
+    return resize#SussDisplayResolutionPattern_GTK()
+  elseif has("macunix")
+    return resize#SussDisplayResolutionPattern_macOS()
+  endif
+endfunction
+
+function! resize#SussDisplayResolutionCommand_GTK(use_secondary) abort
+  let l:filter_str = "' connected primary'"
+  if a:use_secondary
+    let l:filter_str = "-v " .. l:filter_str .. " | grep ' connected '"
+  endif
+
+  let l:system_cmd = "xrandr --query | grep " .. l:filter_str
+
+  return l:system_cmd
+endfunction
+
+" E.g., '0x0+2560+1440'
+function! resize#SussDisplayResolutionPattern_GTK() abort
+  return '\(\d\+\)x\(\d\+\)+\(\d\+\)+\(\d\+\)'
+endfunction
+
+" BWARE/2024-04-14: Author only has 1 monitor attached to macOS.
+" - Not sure if AppleScript still works. If not, `system_profiler`
+"   returns resolutions for each attached monitor (though without
+"   extra monitor to test, not sure how they're listed).
+"   - E.g.,:
+"       system_profiler SPDisplaysDataType | grep Resolution:
+" - REFER: For possible multiple-monitor support, see old article
+"   with broken like to solution:
+"     https://daringfireball.net/2006/12/display_size_applescript_the_lazy_way
+function! resize#SussDisplayResolutionCommand_macOS(use_secondary) abort
+  " E.g., '0, 0, 2560, 1440' → '2560, 1440, 0, 0'
+  return "osascript -e 'tell application \"Finder\" to get bounds of window of desktop'"
+    \ . " | sed -E 's/^([0-9]+), ([0-9]+), ([0-9]+), ([0-9]+)$/\\3, \\4, \\1, \\2/'"
+endfunction
+
+" E.g., '2560, 1440, 0, 0' (reordered osascript output)
+function! resize#SussDisplayResolutionPattern_macOS() abort
+  return '\(\d\+\), \(\d\+\), \(\d\+\), \(\d\+\)'
+endfunction
 
 " +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ "
 
