@@ -425,7 +425,7 @@ function! resize#SussDisplayResolutionPattern_GTK() abort
 endfunction
 
 " BWARE/2024-04-14: Author only has 1 monitor attached to macOS.
-" - Not sure if AppleScript still works. If not, `system_profiler`
+" - Not sure if/how AppleScript works with 2. If not, `system_profiler`
 "   returns resolutions for each attached monitor (though without
 "   extra monitor to test, not sure how they're listed).
 "   - E.g.,:
@@ -433,10 +433,29 @@ endfunction
 " - REFER: For possible multiple-monitor support, see old article
 "   with broken like to solution:
 "     https://daringfireball.net/2006/12/display_size_applescript_the_lazy_way
-function! resize#SussDisplayResolutionCommand_macOS(use_secondary) abort
+" - BWARE: AppleScript fails if Desktop is disabled ("hidden"):
+"     defaults write com.apple.finder CreateDesktop -bool false
+function! resize#SussDisplayResolutionCommand_macOS__AppleScript(use_secondary) abort
   " E.g., '0, 0, 2560, 1440' → '2560, 1440, 0, 0'
   return "osascript -e 'tell application \"Finder\" to get bounds of window of desktop'"
     \ . " | sed -E 's/^([0-9]+), ([0-9]+), ([0-9]+), ([0-9]+)$/\\3, \\4, \\1, \\2/'"
+endfunction
+
+" E.g.,
+"   $ system_profiler SPDisplaysDataType
+"   Graphics/Displays:
+"
+"       Apple M2:
+"
+"       ...
+"             Resolution: 2560 x 1440 (QHD/WQHD - Wide Quad High Definition)
+function! resize#SussDisplayResolutionCommand_macOS(use_secondary) abort
+  return "system_profiler SPDisplaysDataType"
+    \ . " | grep '^ \\+Resolution:'"
+    \ . " | head -n 1"
+    \ . " | sed 's/ \\+/ /g'"
+    \ . " | cut -d' ' -f3,5"
+    \ . " | sed 's/\\([^ ]\\+\\) \\(.*\\)/\\1, \\2, 0, 0/'"
 endfunction
 
 " E.g., '2560, 1440, 0, 0' (reordered osascript output)
