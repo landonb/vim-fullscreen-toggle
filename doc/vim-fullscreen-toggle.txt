@@ -40,7 +40,7 @@ Resize gVim/MacVim window~
 
 			
 				*<Shift-F11>*
-<Shift-F11>>		Restrict to right-half of display.
+<Shift-F11>		Restrict to right-half of display.
 			Like `<F11>`, cycles through 3 different window sizes,
 			but sets window width and position to right-half of display.
 
