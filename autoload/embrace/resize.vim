@@ -77,19 +77,6 @@
 
 " +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ "
 
-" YOU: Uncomment next 'unlet', then <F9> to reload this file.
-"      (Iff: https://github.com/landonb/vim-source-reloader)
-"
-" silent! unlet g:loaded_plugin_vim_fullscreen_toggle_autoload
-
-if exists('g:loaded_plugin_vim_fullscreen_toggle_autoload') || &cp || v:version < 800
-  finish
-endif
-
-let g:loaded_plugin_vim_fullscreen_toggle_autoload = 1
-
-" +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ "
-
 " USAGE: Override these from your startup plug:
 " 
 "  let g:resize_fullscreen_use_secondary_display = 0
