@@ -520,7 +520,7 @@ function! s:ResizeVerticalWindows() abort
 
   let wcols = copy(wnums)->map({_, wnum -> winwidth(wnum)})
 
-  let total_cols = g:embrace#resize#Reduce(function('s:ReducerAdd'), wcols)
+  let total_cols = s:Reduce(function('s:ReducerAdd'), wcols)
 
   let equal_cols = str2nr(total_cols / len(wnums))
 
@@ -539,7 +539,7 @@ endfunction
 " ***
 
 " COPYD/2024-03-04: https://stackoverflow.com/a/18812122
-function! g:embrace#resize#Reduce(fcn, list) abort
+function! s:Reduce(fcn, list) abort
   let [acc; tail] = a:list
 
   while !empty(tail)
