@@ -93,7 +93,7 @@
 " window off-center (I like mine a little to the right of
 " center).
 
-" For toggling back.
+" For toggling back to user dimensions.
 let s:user_win_x = 0
 let s:user_win_y = 0
 let s:user_vim_x = 0
@@ -116,6 +116,7 @@ let s:half_win_y = 0
 let s:half_vim_x = 0
 let s:half_vim_y = 0
 
+" The state machine toggle states.
 let s:st_reset = 0
 let s:st_init = 1
 let s:st_mostly_fs = 2
