@@ -33,8 +33,8 @@ let g:loaded_plugin_vim_fullscreen_toggle_after = 1
 silent! unmap <silent> <unique> <script> <Plug>ToggleFullscreen_Fill
 silent! unmap <silent> <unique> <script> <Plug>ToggleFullscreen_RightHalf
 
-noremap <silent> <unique> <script> <Plug>ToggleFullscreen_Fill :call resize#ToggleResizeWindow(0)<CR>
-noremap <silent> <unique> <script> <Plug>ToggleFullscreen_RightHalf :call resize#ToggleResizeWindow(1)<CR>
+noremap <silent> <unique> <script> <Plug>ToggleFullscreen_Fill :call g:embrace#resize#ToggleResizeWindow(0)<CR>
+noremap <silent> <unique> <script> <Plug>ToggleFullscreen_RightHalf :call g:embrace#resize#ToggleResizeWindow(1)<CR>
 
 " If user resizes Vim, reset the fullscreen toggle state, so next fullscreen
 " call starts at s:state_toggle == 0, which will begin the cycle anew:

@@ -28,6 +28,6 @@ let g:loaded_plugin_init_gui_win_size = 1
 "     au GUIEnter * simalt ~x
 
 if has("gui_running")
-  call resize#ToggleResizeWindow(0)
+  call g:embrace#resize#ToggleResizeWindow(0)
 endif
 

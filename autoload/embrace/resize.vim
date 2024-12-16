@@ -136,7 +136,7 @@ let s:partial_h = 0.90
 " DEVEL: Enable this for trace.
 let s:trace = 0
 
-function! resize#ToggleResizeWindow(sticky_x)
+function! g:embrace#resize#ToggleResizeWindow(sticky_x)
   " Ignore the next two VimResized events, 1 each for set columns, winpos.
   let s:mutex_ignore_next_vimresized = 2
 
@@ -246,7 +246,7 @@ function! resize#ToggleResizeWindow(sticky_x)
       let use_secondary = g:resize_fullscreen_use_secondary_display
     endif
 
-    let dimensions = resize#DisplayOffsetAndResolution(use_secondary)
+    let dimensions = g:embrace#resize#DisplayOffsetAndResolution(use_secondary)
     let [xoff, yoff, size_w, size_h] = dimensions
 
     if a:sticky_x == 1
@@ -298,7 +298,7 @@ function! resize#ToggleResizeWindow(sticky_x)
 
     execute 'set columns=' .. vim_x .. ' lines=' .. vim_y
     execute 'winpos ' .. xoff .. ' ' .. yoff
-    "call resize#SavePrevDimensions()
+    "call g:embrace#resize#SavePrevDimensions()
 
     if s:state_toggle == 0
       let s:part_win_x = getwinposx()
@@ -322,7 +322,7 @@ function! resize#ToggleResizeWindow(sticky_x)
 
       let s:state_toggle = -1
 
-      call resize#ToggleResizeWindow(a:sticky_x)
+      call g:embrace#resize#ToggleResizeWindow(a:sticky_x)
     elseif (s:state_toggle == 0)
       let s:state_toggle = 1
     elseif (s:state_toggle == 1)
@@ -330,12 +330,12 @@ function! resize#ToggleResizeWindow(sticky_x)
     endif
   endif
 
-  call resize#ResizeVerticalWindows()
+  call g:embrace#resize#ResizeVerticalWindows()
 
-  call resize#SavePrevDimensions()
+  call g:embrace#resize#SavePrevDimensions()
 endfunction
 
-function! resize#SavePrevDimensions()
+function! g:embrace#resize#SavePrevDimensions()
   let s:prev_win_x = getwinposx()
   let s:prev_win_y = getwinposy()
   let s:prev_vim_x = &columns
@@ -357,11 +357,11 @@ endfunction
 "   HDMI-1 disconnected (normal left inverted right x axis y axis)
 "   ...
 
-function! resize#DisplayOffsetAndResolution(use_secondary) abort
+function! g:embrace#resize#DisplayOffsetAndResolution(use_secondary) abort
   " Default, in case the command fails.
   let [xoff, yoff, dw, dh] = [0, 0, 1920, 1080]
 
-  let system_cmd = resize#SussDisplayResolutionCommand(a:use_secondary)
+  let system_cmd = g:embrace#resize#SussDisplayResolutionCommand(a:use_secondary)
 
   " Get resolution from xrandr/osascript, and match for the resolution.
   let dimensions = system(system_cmd)
@@ -371,7 +371,7 @@ function! resize#DisplayOffsetAndResolution(use_secondary) abort
     return [xoff, yoff, dw, dh]
   endif
 
-  let pattern = resize#SussDisplayResolutionPattern()
+  let pattern = g:embrace#resize#SussDisplayResolutionPattern()
 
   let matches = dimensions->matchlist(pattern)
   if len(matches) == 0
@@ -392,23 +392,23 @@ function! resize#DisplayOffsetAndResolution(use_secondary) abort
   return [match_xoff, match_yoff, match_w, match_h]
 endfunction
 
-function! resize#SussDisplayResolutionCommand(use_secondary) abort
+function! g:embrace#resize#SussDisplayResolutionCommand(use_secondary) abort
   if has("gui_gtk2") || has("gui_gtk3")
-    return resize#SussDisplayResolutionCommand_GTK(a:use_secondary)
+    return g:embrace#resize#SussDisplayResolutionCommand_GTK(a:use_secondary)
   elseif has("macunix")
-    return resize#SussDisplayResolutionCommand_macOS(a:use_secondary)
+    return g:embrace#resize#SussDisplayResolutionCommand_macOS(a:use_secondary)
   endif
 endfunction
 
-function! resize#SussDisplayResolutionPattern() abort
+function! g:embrace#resize#SussDisplayResolutionPattern() abort
   if has("gui_gtk2") || has("gui_gtk3")
-    return resize#SussDisplayResolutionPattern_GTK()
+    return g:embrace#resize#SussDisplayResolutionPattern_GTK()
   elseif has("macunix")
-    return resize#SussDisplayResolutionPattern_macOS()
+    return g:embrace#resize#SussDisplayResolutionPattern_macOS()
   endif
 endfunction
 
-function! resize#SussDisplayResolutionCommand_GTK(use_secondary) abort
+function! g:embrace#resize#SussDisplayResolutionCommand_GTK(use_secondary) abort
   let l:filter_str = "' connected primary'"
   if a:use_secondary
     let l:filter_str = "-v " .. l:filter_str .. " | grep ' connected '"
@@ -420,7 +420,7 @@ function! resize#SussDisplayResolutionCommand_GTK(use_secondary) abort
 endfunction
 
 " E.g., '0x0+2560+1440'
-function! resize#SussDisplayResolutionPattern_GTK() abort
+function! g:embrace#resize#SussDisplayResolutionPattern_GTK() abort
   return '\(\d\+\)x\(\d\+\)+\(\d\+\)+\(\d\+\)'
 endfunction
 
@@ -435,7 +435,7 @@ endfunction
 "     https://daringfireball.net/2006/12/display_size_applescript_the_lazy_way
 " - BWARE: AppleScript fails if Desktop is disabled ("hidden"):
 "     defaults write com.apple.finder CreateDesktop -bool false
-function! resize#SussDisplayResolutionCommand_macOS__AppleScript(use_secondary) abort
+function! g:embrace#resize#SussDisplayResolutionCommand_macOS__AppleScript(use_secondary) abort
   " E.g., '0, 0, 2560, 1440' → '2560, 1440, 0, 0'
   return "osascript -e 'tell application \"Finder\" to get bounds of window of desktop'"
     \ . " | sed -E 's/^([0-9]+), ([0-9]+), ([0-9]+), ([0-9]+)$/\\3, \\4, \\1, \\2/'"
@@ -449,7 +449,7 @@ endfunction
 "
 "       ...
 "             Resolution: 2560 x 1440 (QHD/WQHD - Wide Quad High Definition)
-function! resize#SussDisplayResolutionCommand_macOS(use_secondary) abort
+function! g:embrace#resize#SussDisplayResolutionCommand_macOS(use_secondary) abort
   return "system_profiler SPDisplaysDataType"
     \ . " | grep '^ \\+Resolution:'"
     \ . " | head -n 1"
@@ -459,7 +459,7 @@ function! resize#SussDisplayResolutionCommand_macOS(use_secondary) abort
 endfunction
 
 " E.g., '2560, 1440, 0, 0' (reordered osascript output)
-function! resize#SussDisplayResolutionPattern_macOS() abort
+function! g:embrace#resize#SussDisplayResolutionPattern_macOS() abort
   return '\(\d\+\), \(\d\+\), \(\d\+\), \(\d\+\)'
 endfunction
 
@@ -472,7 +472,7 @@ endfunction
 " - MAYBE/2024-03-04: Port this solution back to dubs_project_tray,
 "   I think it's a far better approach.
 
-function! resize#ResizeVerticalWindows()
+function! g:embrace#resize#ResizeVerticalWindows()
   " Use mkview/loadview to store current view, i.e., to maintain
   " current folds (otherwise Vim resets them when you reenter buffer).
   " NOTE: Use silent to avoid "E35: No file name" warning message.
@@ -492,7 +492,7 @@ function! resize#ResizeVerticalWindows()
 
   let wcols = copy(wnums)->map({_, wnum -> winwidth(wnum)})
 
-  let total_cols = resize#Reduce(function('resize#ReducerAdd'), wcols)
+  let total_cols = g:embrace#resize#Reduce(function('g:embrace#resize#ReducerAdd'), wcols)
 
   let equal_cols = str2nr(total_cols / len(wnums))
 
@@ -504,14 +504,14 @@ function! resize#ResizeVerticalWindows()
   execute orig_winnr . 'wincmd w'
 endfunction
 
-function! resize#ReducerAdd(acc, head)
+function! g:embrace#resize#ReducerAdd(acc, head)
   return a:acc + a:head
 endfunction
 
 " ***
 
 " COPYD/2024-03-04: https://stackoverflow.com/a/18812122
-function! resize#Reduce(f, list)
+function! g:embrace#resize#Reduce(f, list)
   let [acc; tail] = a:list
 
   while !empty(tail)
