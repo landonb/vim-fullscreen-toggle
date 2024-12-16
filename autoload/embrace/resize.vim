@@ -128,6 +128,21 @@ let s:state_toggle = s:st_init
 let s:partial_w = 0.80
 let s:partial_h = 0.90
 
+" MAYBE/2024-03-03: Find better way to translate display manager window
+" pixels to Vim lines and columns.
+" - Because we need both, pixels for :winpos, font units for set-columns/lines.
+" - SAVVY/2024-03-03: Based on guifont = 'Hack Nerd Font Mono 9' and whatever
+"   other monitor/display settings the author might be using, some values for
+"   a fullscreen GVim window in a 2560x1440 display (with a MATE titlebar, and
+"   3 rows of mate-panel):
+"     :echo &columns → 365 / :echo &lines → 89 / `wmctrl -lG | grep sampi` → 2560x1345
+"   It follows:
+"     2560/365 → 7.014 pixels/column / 1440/89 → 16.180 pixels/line
+" - SAVVY/2024-12-16: These same values work well for the author
+"   in macOS on the same monitor, with hidden menubar and Dock.
+let s:pixels_per_col = 7.014
+let s:pixels_per_row = 16.180
+
 let s:resize_pending = 0
 
 " DEVEL: Enable this for trace.
@@ -252,27 +267,16 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
       let xoff = str2nr(xoff + (size_w / 2))
     endif
 
-    " MAYBE/2024-03-03: Find better way to translate display manager window
-    " pixels to Vim lines and columns.
-    " - Because we need both, pixels for :winpos, font units for set-columns/lines.
-    " - SAVVY/2024-03-03: Based on guifont = 'Hack Nerd Font Mono 9' and whatever
-    "   other monitor/display settings the author might be using, some values for
-    "   a fullscreen GVim window in a 2560x1440 display (with a MATE titlebar, and
-    "   3 rows of mate-panel):
-    "     :echo &columns → 365 / :echo &lines → 89 / `wmctrl -lG | grep sampi` → 2560x1345
-    "   It follows:
-    "     2560/365 → 7.014 pixels/column / 1440/89 → 16.180 pixels/line
-    " - SAVVY/2024-12-16: These same values work well for the author
-    "   in macOS on the same monitor, with hidden menubar and Dock.
-
-    let pixels_per_col = 7.014
     if exists('g:fstoggle_pixels_per_col')
       let pixels_per_col = g:fstoggle_pixels_per_col
+    else
+      let pixels_per_col = s:pixels_per_col
     endif
 
-    let pixels_per_row = 16.180
     if exists('g:fstoggle_pixels_per_row')
       let pixels_per_row = g:fstoggle_pixels_per_row
+    else
+      let pixels_per_row = s:pixels_per_row
     endif
 
     let xoff = str2nr(xoff + ((size_w * (1 - limit_w)) / 2))
