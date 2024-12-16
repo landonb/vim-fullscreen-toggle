@@ -1,8 +1,8 @@
+" vim:tw=0:ts=2:sw=2:et:norl:ft=vim
 " Author: Landon Bouma <https://tallybark.com/>
 " Online: https://github.com/landonb/vim-fullscreen-toggle#💯
 " License: https://creativecommons.org/publicdomain/zero/1.0/
-"  vim:tw=0:ts=2:sw=2:et:norl:ft=vim
-" Copyright © 2011-2024 Landon Bouma.
+"   Copyright © 2011-2024 Landon Bouma.
 
 " +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ "
 

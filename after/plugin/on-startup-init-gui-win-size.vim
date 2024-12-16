@@ -1,7 +1,10 @@
-" Dubs Vim initial GUI dimensions and placement.
-" Author: Landon Bouma (landonb &#x40; retrosoft &#x2E; com)
-" Online: https://github.com/landonb/dubs_appearance
+" vim:tw=0:ts=2:sw=2:et:norl:ft=vim
+" Author: Landon Bouma <https://tallybark.com/>
+" Online: https://github.com/landonb/vim-fullscreen-toggle#💯
 " License: https://creativecommons.org/publicdomain/zero/1.0/
+"   Copyright © 2021-2024 Landon Bouma.
+
+" +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ "
 
 if exists("g:loaded_plugin_init_gui_win_size") || &cp
   finish
