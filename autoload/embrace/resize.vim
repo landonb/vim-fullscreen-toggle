@@ -111,10 +111,10 @@ let s:full_win_y = 0
 let s:full_vim_x = 0
 let s:full_vim_y = 0
 "
-let s:part_win_x = 0
-let s:part_win_y = 0
-let s:part_vim_x = 0
-let s:part_vim_y = 0
+let s:half_win_x = 0
+let s:half_win_y = 0
+let s:half_vim_x = 0
+let s:half_vim_y = 0
 
 let s:state_toggle = 0
 
@@ -156,10 +156,10 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x) abort
     \ && (s:user_vim_x > 0)
     \ && (s:user_vim_y > 0)
     \ && (!(1
-      \ && (s:user_win_x == s:part_win_x)
-      \ && (s:user_win_y == s:part_win_y)
-      \ && (s:user_vim_x == s:part_vim_x)
-      \ && (s:user_vim_y == s:part_vim_y)))
+      \ && (s:user_win_x == s:half_win_x)
+      \ && (s:user_win_y == s:half_win_y)
+      \ && (s:user_vim_x == s:half_vim_x)
+      \ && (s:user_vim_y == s:half_vim_y)))
     \ && (!(1
       \ && (s:user_win_x == s:full_win_x)
       \ && (s:user_win_y == s:full_win_y)
@@ -276,10 +276,10 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x) abort
     "call g:embrace#resize#SavePrevDimensions()
 
     if s:state_toggle == 0
-      let s:part_win_x = getwinposx()
-      let s:part_win_y = getwinposy()
-      let s:part_vim_x = &columns
-      let s:part_vim_y = &lines
+      let s:half_win_x = getwinposx()
+      let s:half_win_y = getwinposy()
+      let s:half_vim_x = &columns
+      let s:half_vim_y = &lines
     elseif s:state_toggle == 1
       let s:full_win_x = getwinposx()
       let s:full_win_y = getwinposy()
@@ -290,10 +290,10 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x) abort
     " If orig size same as mostly fullscreen, means nothing changed
     " just now, so move on to next state, fully fullscreen.
     if (s:state_toggle == 0)
-      \ && (s:orig_win_x == s:part_win_x)
-      \ && (s:orig_win_y == s:part_win_y)
-      \ && (s:orig_vim_x == s:part_vim_x)
-      \ && (s:orig_vim_y == s:part_vim_y)
+      \ && (s:orig_win_x == s:half_win_x)
+      \ && (s:orig_win_y == s:half_win_y)
+      \ && (s:orig_vim_x == s:half_vim_x)
+      \ && (s:orig_vim_y == s:half_vim_y)
 
       let s:state_toggle = -1
 
