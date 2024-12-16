@@ -136,7 +136,7 @@ let s:partial_h = 0.90
 " DEVEL: Enable this for trace.
 let s:trace = 0
 
-function! g:embrace#resize#ToggleResizeWindow(sticky_x)
+function! g:embrace#resize#ToggleResizeWindow(sticky_x) abort
   " Ignore the next two VimResized events, 1 each for set columns, winpos.
   let s:mutex_ignore_next_vimresized = 2
 
@@ -335,7 +335,7 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x)
   call g:embrace#resize#SavePrevDimensions()
 endfunction
 
-function! g:embrace#resize#SavePrevDimensions()
+function! g:embrace#resize#SavePrevDimensions() abort
   let s:prev_win_x = getwinposx()
   let s:prev_win_y = getwinposy()
   let s:prev_vim_x = &columns
@@ -472,7 +472,7 @@ endfunction
 " - MAYBE/2024-03-04: Port this solution back to dubs_project_tray,
 "   I think it's a far better approach.
 
-function! g:embrace#resize#ResizeVerticalWindows()
+function! g:embrace#resize#ResizeVerticalWindows() abort
   " Use mkview/loadview to store current view, i.e., to maintain
   " current folds (otherwise Vim resets them when you reenter buffer).
   " NOTE: Use silent to avoid "E35: No file name" warning message.
@@ -504,14 +504,14 @@ function! g:embrace#resize#ResizeVerticalWindows()
   execute orig_winnr . 'wincmd w'
 endfunction
 
-function! g:embrace#resize#ReducerAdd(acc, head)
+function! g:embrace#resize#ReducerAdd(acc, head) abort
   return a:acc + a:head
 endfunction
 
 " ***
 
 " COPYD/2024-03-04: https://stackoverflow.com/a/18812122
-function! g:embrace#resize#Reduce(f, list)
+function! g:embrace#resize#Reduce(f, list) abort
   let [acc; tail] = a:list
 
   while !empty(tail)
