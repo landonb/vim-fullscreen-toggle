@@ -72,6 +72,9 @@
 "   - But those mechanism will not resize the Vim window panes, whereas
 "     this plugin with adjust vertical splits to equal widths.
 
+" ALERT: After reloading this plugin, (getwinposx(), getwinposy()) is 0,0
+"        until user drags or resizes the window again.
+
 " WORDS: Perhaps to differentiate from macOS 'Full Screen Mode'
 "        this plugin should rather be called 'fillscreen'.
 
@@ -121,6 +124,7 @@ let s:partial_h = 0.90
 
 " DEVEL: Enable this for trace.
 let s:trace = 0
+" let s:trace = 1
 
 function! g:embrace#resize#ToggleResizeWindow(sticky_x) abort
   if 0
@@ -233,6 +237,8 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x) abort
     "     :echo &columns → 365 / :echo &lines → 89 / `wmctrl -lG | grep sampi` → 2560x1345
     "   It follows:
     "     2560/365 → 7.014 pixels/column / 1440/89 → 16.180 pixels/line
+    " - SAVVY/2024-12-16: These same values work well for the author
+    "   in macOS on the same monitor, with hidden menubar and Dock.
 
     let pixels_per_col = 7.014
     if exists('g:resize_fullscreen_pixels_per_col')
