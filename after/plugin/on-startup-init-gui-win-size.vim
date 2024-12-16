@@ -20,19 +20,16 @@ let g:loaded_vim_fullscreen_toggle_on_startup = 1
 
 " +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ "
 
-" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-" Start up window size
-" ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+" *** Start up window size
 
-" Start Mostly Fullscreen
-" ------------------------------------------------------
-" Start with a reasonably sized window for GUIs
-" (ignore for CLI so we don't change terminal size)
-
-" - SAVVY: If this is disabled, default `gvim --servername sampi <file>`
+" Start GUI GVim mostly fullscreen.
+"
+" - Ignore for CLI Vim so we don't change terminal size.
+"
+" - SAVVY: If this is disabled, default `gvim --servername foo <file>`
 "   creates GVim window centered in display, at something like 60% of
-"   the display width, and ~70% of the height, at least on a 2560x1440
-"   display — I see the equivalent of:
+"   the display width, and ~70% of the height, at least on author's
+"   2560x1440 display — I see the equivalent of:
 "     set columns=179 lines=65
 "     winpos 648 181
 "
