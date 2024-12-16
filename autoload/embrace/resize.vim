@@ -283,18 +283,18 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
     let l:xoff = str2nr(l:xoff + ((l:size_w * (1 - l:partial_w)) / 2))
     let l:yoff = str2nr(l:yoff + ((l:size_h * (1 - l:partial_h)) / 2))
 
-    let vim_x = str2nr(l:partial_w * l:size_w / l:pixels_per_col)
+    let l:vim_x = str2nr(l:partial_w * l:size_w / l:pixels_per_col)
     let vim_y = str2nr(l:partial_h * l:size_h / l:pixels_per_row)
 
     if s:trace == 1
       echom 'DOAR: xoff: (' .. l:xoff .. ', ' .. l:yoff .. ') / '
         \ .. 'size: (' .. l:size_w .. ' x ' .. l:size_h .. ') // '
-        \ .. 'new sz: (' .. vim_x .. ' x ' .. vim_y .. ') // '
+        \ .. 'new sz: (' .. l:vim_x .. ' x ' .. vim_y .. ') // '
         \ .. 'state_toggle: ' .. s:state_toggle .. ' / '
         \ .. 'sticky_x: ' .. a:sticky_x
     endif
 
-    execute 'set columns=' .. vim_x .. ' lines=' .. vim_y
+    execute 'set columns=' .. l:vim_x .. ' lines=' .. vim_y
     execute 'winpos ' .. l:xoff .. ' ' .. l:yoff
   endif
 
