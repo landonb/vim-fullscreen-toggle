@@ -244,7 +244,7 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
       let use_secondary = g:resize_fullscreen_use_secondary_display
     endif
 
-    let dimensions = g:embrace#resize#DisplayOffsetAndResolution(use_secondary)
+    let dimensions = s:DisplayOffsetAndResolution(use_secondary)
     let [xoff, yoff, size_w, size_h] = dimensions
 
     if a:sticky_x == 1
@@ -384,7 +384,7 @@ endfunction
 "   HDMI-1 disconnected (normal left inverted right x axis y axis)
 "   ...
 
-function! g:embrace#resize#DisplayOffsetAndResolution(use_secondary) abort
+function! s:DisplayOffsetAndResolution(use_secondary) abort
   " Default, in case the command fails.
   let [xoff, yoff, dw, dh] = [0, 0, 1920, 1080]
 
