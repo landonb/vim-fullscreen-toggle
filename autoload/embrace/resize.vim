@@ -513,30 +513,30 @@ function! s:ResizeVerticalWindows() abort
   " NOTE: Use silent to avoid "E35: No file name" warning message.
   silent! mkview
 
-  let orig_winnr = winnr()
+  let l:orig_winnr = winnr()
 
-  let proj_winnr = -1
+  let l:proj_winnr = -1
   if exists('g:proj_running')
-    let proj_winnr = bufwinnr(g:proj_running)
+    let l:proj_winnr = bufwinnr(g:proj_running)
   endif
 
   " Numbers of windows that view target buffer which we will delete.
   "  \ 'win_screenpos(v:val)[0] == 1 && !<SID>IsWindowSpecial(v:val)')
   let wnums = filter(range(1, winnr('$')),
-    \ 'win_screenpos(v:val)[0] == 1 && (v:val != ' .. proj_winnr ..')')
+    \ 'win_screenpos(v:val)[0] == 1 && (v:val != ' .. l:proj_winnr ..')')
 
-  let wcols = copy(wnums)->map({_, wnum -> winwidth(wnum)})
+  let l:wcols = copy(wnums)->map({_, wnum -> winwidth(wnum)})
 
-  let total_cols = s:Reduce(function('s:ReducerAdd'), wcols)
+  let l:total_cols = s:Reduce(function('s:ReducerAdd'), l:wcols)
 
-  let equal_cols = str2nr(total_cols / len(wnums))
+  let l:equal_cols = str2nr(l:total_cols / len(l:wnums))
 
-  for wnum in wnums
-    execute wnum .. 'wincmd w | vertical resize ' .. equal_cols
+  for l:wnum in wnums
+    execute l:wnum .. 'wincmd w | vertical resize ' .. l:equal_cols
   endfor
 
   " Move cursor back to starting window.
-  execute orig_winnr . 'wincmd w'
+  execute l:orig_winnr . 'wincmd w'
 endfunction
 
 function! s:ReducerAdd(acc, head) abort
