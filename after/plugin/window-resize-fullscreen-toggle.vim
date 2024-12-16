@@ -6,16 +6,17 @@
 
 " +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ "
 
-" YOU: Uncomment next 'unlet', then <F9> to reload this file.
-"      (Iff: https://github.com/landonb/vim-source-reloader)
+" USAGE: Unlet var (or nix finish) & press <F9> to reload this plugin.
+" USING: https://github.com/landonb/vim-source-reloader#↩️
 "
-" silent! unlet g:loaded_plugin_vim_fullscreen_toggle_after
+"  silent! unlet g:loaded_vim_fullscreen_toggle_create_maps
 
-if exists('g:loaded_plugin_vim_fullscreen_toggle_after') || &cp || v:version < 800
+if exists("g:loaded_vim_fullscreen_toggle_create_maps") || &cp || v:version < 800
+
   finish
 endif
 
-let g:loaded_plugin_vim_fullscreen_toggle_after = 1
+let g:loaded_vim_fullscreen_toggle_create_maps = 1
 
 " +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ "
 

@@ -6,10 +6,19 @@
 
 " +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ "
 
-if exists("g:loaded_plugin_init_gui_win_size") || &cp
+" USAGE: Unlet var (or nix finish) & press <F9> to reload this plugin.
+" USING: https://github.com/landonb/vim-source-reloader#↩️
+"
+"  silent! unlet g:loaded_vim_fullscreen_toggle_on_startup
+
+if exists("g:loaded_vim_fullscreen_toggle_on_startup") || &cp
+
   finish
 endif
-let g:loaded_plugin_init_gui_win_size = 1
+
+let g:loaded_vim_fullscreen_toggle_on_startup = 1
+
+" +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ "
 
 " ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 " Start up window size
