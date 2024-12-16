@@ -18,8 +18,9 @@ which will resize a gVim/MacVim window to fill the screen.
 
 But that trick breaks when there's more than one monitor attached.
 
-This plugin restricts the resize to just one monitor, and
-it also adjusts vertical splits to be equal widths.
+This plugin restricts the resize to just one monitor.
+
+After resizing, It also adjusts vertical splits to be equal widths.
 
 ===========================  ============================  ==============================================================================
  Key Mapping                  Description                   Notes
