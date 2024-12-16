@@ -539,12 +539,12 @@ endfunction
 " ***
 
 " COPYD/2024-03-04: https://stackoverflow.com/a/18812122
-function! g:embrace#resize#Reduce(f, list) abort
+function! g:embrace#resize#Reduce(fcn, list) abort
   let [acc; tail] = a:list
 
   while !empty(tail)
     let [head; tail] = tail
-    let acc = a:f(acc, head)
+    let acc = a:fcn(acc, head)
   endwhile
 
   return acc
