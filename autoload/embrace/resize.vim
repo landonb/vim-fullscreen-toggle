@@ -398,7 +398,7 @@ function! s:DisplayOffsetAndResolution(use_secondary) abort
     return [xoff, yoff, dw, dh]
   endif
 
-  let pattern = g:embrace#resize#SussDisplayResolutionPattern()
+  let pattern = s:SussDisplayResolutionPattern()
 
   let matches = dimensions->matchlist(pattern)
   if len(matches) == 0
@@ -427,11 +427,11 @@ function! s:SussDisplayResolutionCommand(use_secondary) abort
   endif
 endfunction
 
-function! g:embrace#resize#SussDisplayResolutionPattern() abort
+function! s:SussDisplayResolutionPattern() abort
   if has("gui_gtk2") || has("gui_gtk3")
-    return g:embrace#resize#SussDisplayResolutionPattern_GTK()
+    return s:SussDisplayResolutionPattern_GTK()
   elseif has("macunix")
-    return g:embrace#resize#SussDisplayResolutionPattern_macOS()
+    return s:SussDisplayResolutionPattern_macOS()
   endif
 endfunction
 
@@ -447,7 +447,7 @@ function! s:SussDisplayResolutionCommand_GTK(use_secondary) abort
 endfunction
 
 " E.g., '0x0+2560+1440'
-function! g:embrace#resize#SussDisplayResolutionPattern_GTK() abort
+function! s:SussDisplayResolutionPattern_GTK() abort
   return '\(\d\+\)x\(\d\+\)+\(\d\+\)+\(\d\+\)'
 endfunction
 
@@ -487,7 +487,7 @@ function! s:SussDisplayResolutionCommand_macOS(use_secondary) abort
 endfunction
 
 " E.g., '2560, 1440, 0, 0' (reordered osascript output)
-function! g:embrace#resize#SussDisplayResolutionPattern_macOS() abort
+function! s:SussDisplayResolutionPattern_macOS() abort
   return '\(\d\+\), \(\d\+\), \(\d\+\), \(\d\+\)'
 endfunction
 
