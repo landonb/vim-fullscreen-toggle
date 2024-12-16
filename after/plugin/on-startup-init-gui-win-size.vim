@@ -44,7 +44,7 @@ function! s:InitWindowSize()
   endif
 
   if has("gui_running")
-    call g:embrace#resize#ToggleResizeWindow(0)
+    call g:embrace#resize#ToggleResizeWindow(0, 0)
   endif
 endfunction
 

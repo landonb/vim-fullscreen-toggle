@@ -116,9 +116,15 @@ let s:half_win_y = 0
 let s:half_vim_x = 0
 let s:half_vim_y = 0
 
-let s:state_toggle = 0
+let s:st_reset = 0
+let s:st_init = 1
+let s:st_mostly_fs = 2
+let s:st_fullscreen = 3
+let s:st_user_dims = 4
 
-" For s:state_toggle == 2
+let s:state_toggle = s:st_init
+
+" For s:state_toggle == s:st_mostly_fs
 let s:partial_w = 0.80
 let s:partial_h = 0.90
 
@@ -126,78 +132,91 @@ let s:partial_h = 0.90
 let s:trace = 0
 " let s:trace = 1
 
-function! g:embrace#resize#ToggleResizeWindow(sticky_x) abort
-  if 0
-    \ || (s:prev_win_x != getwinposx())
-    \ || (s:prev_win_y != getwinposy())
-    \ || (s:prev_vim_x != &columns)
-    \ || (s:prev_vim_y != &lines)
-    " User moved the window. (Note there's a VimResized event,
-    " but no event for window moved, hence this state check.)
-    " - Reset the state toggle, but not if recursed into this function.
-    if s:state_toggle != -1
-      if s:trace == 1
-        echom 'RESET: prev_win: (' .. s:prev_win_x .. ', ' .. s:prev_win_y .. ') / '
-          \ .. 'prev_vim: (' .. s:prev_vim_x .. ' x ' .. s:prev_vim_y .. ') / '
-          \ .. 'getwinpos: (' .. getwinposx() .. ', ' .. getwinposy() .. ') / '
-          \ .. 'size: (' .. &columns .. ' x ' .. &lines .. ')'
-      endif
+function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
+  if a:new_state != ''
+    let s:state_toggle = a:new_state
+  endif
 
-      let s:state_toggle = 0
+  endif
+
+  call s:SaveCurrDimensions()
+
+  " Check if user moved the window. (Note there's a VimResized event,
+  " but no event for window moved, hence this state check.)
+  if s:state_toggle == s:st_init
+    \ || (s:prev_win_x != s:curr_win_x)
+    \ || (s:prev_win_y != s:curr_win_y)
+    \ || (s:prev_vim_x != s:curr_vim_x)
+    \ || (s:prev_vim_y != s:curr_vim_y)
+    if s:trace == 1
+      echom 'RESET: prev_win: (' .. s:prev_win_x .. ', ' .. s:prev_win_y .. ') / '
+        \ .. 'prev_vim: (' .. s:prev_vim_x .. ' x ' .. s:prev_vim_y .. ') / '
+        \ .. 'curr_win: (' .. s:curr_win_x .. ', ' .. s:curr_win_y .. ') / '
+        \ .. 'curr_vim: (' .. s:curr_vim_x .. ' x ' .. s:curr_vim_y .. ')'
+    endif
+
+    let s:state_toggle = s:st_mostly_fs
+
+    if s:state_toggle != s:st_init
+      call s:SaveUserDimensions()
     endif
   endif
 
-  " Check if next state restores original user dimensions (state_toggle == 2),
-  " unless those original dimensions match the current window (1st s:user_*
-  " block) or if those original dimensions match full screen (2nd s:user_*
-  " block). I.e., skip this state if user dimensions same as one of the other
-  " 2 states.
-  if (s:state_toggle == 2)
-    \ && (s:user_vim_x > 0)
-    \ && (s:user_vim_y > 0)
-    \ && (!(1
-      \ && (s:user_win_x == s:half_win_x)
-      \ && (s:user_win_y == s:half_win_y)
-      \ && (s:user_vim_x == s:half_vim_x)
-      \ && (s:user_vim_y == s:half_vim_y)))
-    \ && (!(1
-      \ && (s:user_win_x == s:full_win_x)
-      \ && (s:user_win_y == s:full_win_y)
-      \ && (s:user_vim_x == s:full_vim_x)
-      \ && (s:user_vim_y == s:full_vim_y)))
+  " ***
 
-    if s:trace == 1
-      echom 'toggle off: user_win: (' .. s:user_win_x .. ', ' .. s:user_win_y .. ') / '
-        \ .. 'user_vim: (' .. s:user_vim_x .. ' x ' .. s:user_vim_y .. ') / '
-        \ .. 'state_toggle: ' .. s:state_toggle .. ' / '
-        \ .. 'sticky_x: ' .. a:sticky_x
+  call s:SavePrevDimensions('reset')
+
+  if s:trace == 1
+    echom 'user dim: user_win: (' .. s:user_win_x .. ', ' .. s:user_win_y .. ') / '
+      \ .. 'user_vim: (' .. s:user_vim_x .. ' x ' .. s:user_vim_y .. ') / '
+      \ .. 'state_toggle: ' .. s:state_toggle .. ' / '
+      \ .. 'sticky_x: ' .. a:sticky_x
+  endif
+
+  " Check if next state restores original user dimensions,
+  " unless those original dimensions match the current window
+  " (1st s:user_* block) or if those original dimensions match
+  " full screen (2nd s:user_* block).
+  " - I.e., skip this state if the user dimensions are the same
+  "   as either one of the other 2 states.
+  if (s:state_toggle == s:st_user_dims)
+    if 1
+      \ && (s:user_vim_x > 0)
+      \ && (s:user_vim_y > 0)
+      \ && (!(1
+        \ && (s:user_win_x == s:half_win_x)
+        \ && (s:user_win_y == s:half_win_y)
+        \ && (s:user_vim_x == s:half_vim_x)
+        \ && (s:user_vim_y == s:half_vim_y)))
+      \ && (!(1
+        \ && (s:user_win_x == s:full_win_x)
+        \ && (s:user_win_y == s:full_win_y)
+        \ && (s:user_vim_x == s:full_vim_x)
+        \ && (s:user_vim_y == s:full_vim_y)))
+
+      if s:trace == 1 | echom 'USER dim' | endif
+
+      exec 'set columns=' .. s:user_vim_x .. ' lines=' .. s:user_vim_y
+      exec 'winpos ' .. s:user_win_x .. ' ' .. s:user_win_y
+    else
+      " No user window size.
+      if s:trace == 1 | echom 'no user dim' | endif
+
+      let s:state_toggle = s:st_mostly_fs
     endif
+  endif
 
-    exec 'set columns=' .. s:user_vim_x .. ' lines=' .. s:user_vim_y
-    exec 'winpos ' .. s:user_win_x .. ' ' .. s:user_win_y
+  " ***
 
-    let s:state_toggle = 0
-  else
+  if (s:state_toggle != s:st_user_dims)
     let limit_w = 1
     let limit_h = 1
 
-    if (abs(s:state_toggle) == 1)
-      " Fullscreen
-      let s:state_toggle = 1
-
+    if s:state_toggle == s:st_fullscreen
       " Set Totally Fullscreen vars
       let limit_w = 1
       let limit_h = 1
     else
-      " Mostly fullscreen
-      let s:state_toggle = 0
-
-      " Remember original window dimensions.
-      let s:user_win_x = getwinposx()
-      let s:user_win_y = getwinposy()
-      let s:user_vim_x = &columns
-      let s:user_vim_y = &lines
-
       " Set Mostly Fullscreen vars
       if exists('g:resize_fullscreen_limit_w')
         let limit_w = g:resize_fullscreen_limit_w
@@ -260,61 +279,56 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x) abort
       echom 'DOAR: xoff: (' .. xoff .. ', ' .. yoff .. ') / '
         \ .. 'size: (' .. size_w .. ' x ' .. size_h .. ') // '
         \ .. 'new sz: (' .. vim_x .. ' x ' .. vim_y .. ') // '
-        \ .. 'toggle on: user_win: (' .. s:user_win_x .. ', ' .. s:user_win_y .. ') / '
-        \ .. 'user_vim: (' .. s:user_vim_x .. ' x ' .. s:user_vim_y .. ') / '
         \ .. 'state_toggle: ' .. s:state_toggle .. ' / '
         \ .. 'sticky_x: ' .. a:sticky_x
     endif
 
-    let s:orig_win_x = getwinposx()
-    let s:orig_win_y = getwinposy()
-    let s:orig_vim_x = &columns
-    let s:orig_vim_y = &lines
-
     execute 'set columns=' .. vim_x .. ' lines=' .. vim_y
     execute 'winpos ' .. xoff .. ' ' .. yoff
-    "call g:embrace#resize#SavePrevDimensions()
+  endif
 
-    if s:state_toggle == 0
-      let s:half_win_x = getwinposx()
-      let s:half_win_y = getwinposy()
-      let s:half_vim_x = &columns
-      let s:half_vim_y = &lines
-    elseif s:state_toggle == 1
-      let s:full_win_x = getwinposx()
-      let s:full_win_y = getwinposy()
-      let s:full_vim_x = &columns
-      let s:full_vim_y = &lines
-    endif
+  " ***
 
-    " If orig size same as mostly fullscreen, means nothing changed
-    " just now, so move on to next state, fully fullscreen.
-    if (s:state_toggle == 0)
-      \ && (s:orig_win_x == s:half_win_x)
-      \ && (s:orig_win_y == s:half_win_y)
-      \ && (s:orig_vim_x == s:half_vim_x)
-      \ && (s:orig_vim_y == s:half_vim_y)
-
-      let s:state_toggle = -1
-
-      call g:embrace#resize#ToggleResizeWindow(a:sticky_x)
-    elseif (s:state_toggle == 0)
-      let s:state_toggle = 1
-    elseif (s:state_toggle == 1)
-      let s:state_toggle = 2
-    endif
+  if (s:state_toggle == s:st_user_dims)
+    let s:state_toggle = s:st_mostly_fs
+  elseif (s:state_toggle == s:st_mostly_fs)
+    let s:state_toggle = s:st_fullscreen
+  elseif (s:state_toggle == s:st_fullscreen)
+    let s:state_toggle = s:st_user_dims
   endif
 
   call g:embrace#resize#ResizeVerticalWindows()
 
-  call g:embrace#resize#SavePrevDimensions()
+  call s:SavePrevDimensions('after')
 endfunction
 
-function! g:embrace#resize#SavePrevDimensions() abort
+" ***
+
+function! s:SaveCurrDimensions() abort
+  let s:curr_win_x = getwinposx()
+  let s:curr_win_y = getwinposy()
+  let s:curr_vim_x = &columns
+  let s:curr_vim_y = &lines
+endfunction
+
+function! s:SavePrevDimensions(msg = 0) abort
   let s:prev_win_x = getwinposx()
   let s:prev_win_y = getwinposy()
   let s:prev_vim_x = &columns
   let s:prev_vim_y = &lines
+
+  if s:trace == 1
+    echom 'PREV: prev_win: (' .. s:prev_win_x .. ', ' .. s:prev_win_y .. ') / '
+      \ .. 'prev_vim: (' .. s:prev_vim_x .. ' x ' .. s:prev_vim_y .. ') / '
+      \ .. 'timer_id_or_msg: ' .. a:msg
+  endif
+endfunction
+
+function! s:SaveUserDimensions() abort
+  let s:user_win_x = getwinposx()
+  let s:user_win_y = getwinposy()
+  let s:user_vim_x = &columns
+  let s:user_vim_y = &lines
 endfunction
 
 " +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ "
