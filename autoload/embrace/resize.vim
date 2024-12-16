@@ -114,7 +114,6 @@ let s:part_vim_x = 0
 let s:part_vim_y = 0
 
 let s:state_toggle = 0
-let s:mutex_ignore_next_vimresized = 0
 
 " For s:state_toggle == 2
 let s:partial_w = 0.80
@@ -124,9 +123,6 @@ let s:partial_h = 0.90
 let s:trace = 0
 
 function! g:embrace#resize#ToggleResizeWindow(sticky_x) abort
-  " Ignore the next two VimResized events, 1 each for set columns, winpos.
-  let s:mutex_ignore_next_vimresized = 2
-
   if 0
     \ || (s:prev_win_x != getwinposx())
     \ || (s:prev_win_y != getwinposy())
@@ -211,20 +207,6 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x) abort
         let limit_h = s:partial_h
       endif
     endif
-
-    " ***
-
-    " ISOFF/2024-03-04: See comment below re: sloppy '999' approach.
-    "
-    " " MAGIC: Rather than measure the screen, just go Extra Big.
-    " " - Gvim/MacVim will figure it out and restrict dimensions.
-    " if a:sticky_x == 0
-    "   set columns=999 lines=999
-    " else
-    "   " (lb): This is probably Very Somewhat specific to my 1920x1080 monitor.
-    "   winpos 657 0
-    "   set columns=179 lines=999
-    " endif
 
     " ***
 
