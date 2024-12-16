@@ -275,16 +275,16 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
     endif
 
     if exists('g:fstoggle_pixels_per_row')
-      let pixels_per_row = g:fstoggle_pixels_per_row
+      let l:pixels_per_row = g:fstoggle_pixels_per_row
     else
-      let pixels_per_row = s:pixels_per_row
+      let l:pixels_per_row = s:pixels_per_row
     endif
 
     let l:xoff = str2nr(l:xoff + ((l:size_w * (1 - l:partial_w)) / 2))
     let l:yoff = str2nr(l:yoff + ((l:size_h * (1 - l:partial_h)) / 2))
 
     let vim_x = str2nr(l:partial_w * l:size_w / l:pixels_per_col)
-    let vim_y = str2nr(l:partial_h * l:size_h / pixels_per_row)
+    let vim_y = str2nr(l:partial_h * l:size_h / l:pixels_per_row)
 
     if s:trace == 1
       echom 'DOAR: xoff: (' .. l:xoff .. ', ' .. l:yoff .. ') / '
