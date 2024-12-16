@@ -520,7 +520,7 @@ function! s:ResizeVerticalWindows() abort
 
   let wcols = copy(wnums)->map({_, wnum -> winwidth(wnum)})
 
-  let total_cols = g:embrace#resize#Reduce(function('g:embrace#resize#ReducerAdd'), wcols)
+  let total_cols = g:embrace#resize#Reduce(function('s:ReducerAdd'), wcols)
 
   let equal_cols = str2nr(total_cols / len(wnums))
 
@@ -532,7 +532,7 @@ function! s:ResizeVerticalWindows() abort
   execute orig_winnr . 'wincmd w'
 endfunction
 
-function! g:embrace#resize#ReducerAdd(acc, head) abort
+function! s:ReducerAdd(acc, head) abort
   return a:acc + a:head
 endfunction
 
