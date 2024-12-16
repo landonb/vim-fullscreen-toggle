@@ -462,12 +462,13 @@ endfunction
 "     https://daringfireball.net/2006/12/display_size_applescript_the_lazy_way
 " - BWARE: AppleScript fails if Desktop is disabled ("hidden"):
 "     defaults write com.apple.finder CreateDesktop -bool false
-function! s:SussDisplayResolutionCommand_macOS__AppleScript(use_secondary) abort
-  " E.g., '0, 0, 2560, 1440' → '2560, 1440, 0, 0'
-  return "osascript -e 'tell application \"Finder\" to get bounds of window of desktop'"
-    \ . " | sed -E 's/^([0-9]+), ([0-9]+), ([0-9]+), ([0-9]+)$/\\3, \\4, \\1, \\2/'"
-endfunction
-
+"
+"   function! s:SussDisplayResolutionCommand_macOS__AppleScript(use_secondary) abort
+"     " E.g., '0, 0, 2560, 1440' → '2560, 1440, 0, 0'
+"     return "osascript -e 'tell application \"Finder\" to get bounds of window of desktop'"
+"       \ . " | sed -E 's/^([0-9]+), ([0-9]+), ([0-9]+), ([0-9]+)$/\\3, \\4, \\1, \\2/'"
+"   endfunction
+"
 " E.g.,
 "   $ system_profiler SPDisplaysDataType
 "   Graphics/Displays:
