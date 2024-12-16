@@ -303,7 +303,7 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
     let s:state_toggle = s:st_user_dims
   endif
 
-  call g:embrace#resize#ResizeVerticalWindows()
+  call s:ResizeVerticalWindows()
 
   " Vim might still be resizing. Be patient.
   " - See comment above VimResized, below, for more.
@@ -500,7 +500,7 @@ endfunction
 " - MAYBE/2024-03-04: Port this solution back to dubs_project_tray,
 "   I think it's a far better approach.
 
-function! g:embrace#resize#ResizeVerticalWindows() abort
+function! s:ResizeVerticalWindows() abort
   " Use mkview/loadview to store current view, i.e., to maintain
   " current folds (otherwise Vim resets them when you reenter buffer).
   " NOTE: Use silent to avoid "E35: No file name" warning message.
