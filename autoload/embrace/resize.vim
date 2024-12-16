@@ -324,7 +324,7 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
   " fullyscreen and fully fullscreen).
   " - At 75 msec. or more, author has not been able to break the cycle.
   "   - At 0, 25, or 50 msec., if I <F11> quickly, I can break it.
-  let empirical_timeout_msec = 75
+  let l:empirical_timeout_msec = 75
 
   let timer_id = timer_start(l:empirical_timeout_msec, "EmbraceResizeSavePrevDimensions")
 endfunction
