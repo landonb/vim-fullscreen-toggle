@@ -261,11 +261,11 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
     endif
 
     let l:dimensions = s:DisplayOffsetAndResolution(l:use_secondary)
-    let [l:xoff, l:yoff, size_w, size_h] = l:dimensions
+    let [l:xoff, l:yoff, l:size_w, size_h] = l:dimensions
 
     if a:sticky_x == 1
       let l:partial_w = 0.5
-      let l:xoff = str2nr(l:xoff + (size_w / 2))
+      let l:xoff = str2nr(l:xoff + (l:size_w / 2))
     endif
 
     if exists('g:fstoggle_pixels_per_col')
@@ -280,15 +280,15 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
       let pixels_per_row = s:pixels_per_row
     endif
 
-    let l:xoff = str2nr(l:xoff + ((size_w * (1 - l:partial_w)) / 2))
+    let l:xoff = str2nr(l:xoff + ((l:size_w * (1 - l:partial_w)) / 2))
     let l:yoff = str2nr(l:yoff + ((size_h * (1 - l:partial_h)) / 2))
 
-    let vim_x = str2nr(l:partial_w * size_w / pixels_per_col)
+    let vim_x = str2nr(l:partial_w * l:size_w / pixels_per_col)
     let vim_y = str2nr(l:partial_h * size_h / pixels_per_row)
 
     if s:trace == 1
       echom 'DOAR: xoff: (' .. l:xoff .. ', ' .. l:yoff .. ') / '
-        \ .. 'size: (' .. size_w .. ' x ' .. size_h .. ') // '
+        \ .. 'size: (' .. l:size_w .. ' x ' .. size_h .. ') // '
         \ .. 'new sz: (' .. vim_x .. ' x ' .. vim_y .. ') // '
         \ .. 'state_toggle: ' .. s:state_toggle .. ' / '
         \ .. 'sticky_x: ' .. a:sticky_x
