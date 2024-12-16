@@ -388,7 +388,7 @@ function! s:DisplayOffsetAndResolution(use_secondary) abort
   " Default, in case the command fails.
   let [xoff, yoff, dw, dh] = [0, 0, 1920, 1080]
 
-  let system_cmd = g:embrace#resize#SussDisplayResolutionCommand(a:use_secondary)
+  let system_cmd = s:SussDisplayResolutionCommand(a:use_secondary)
 
   " Get resolution from xrandr/osascript, and match for the resolution.
   let dimensions = system(system_cmd)
@@ -419,11 +419,11 @@ function! s:DisplayOffsetAndResolution(use_secondary) abort
   return [match_xoff, match_yoff, match_w, match_h]
 endfunction
 
-function! g:embrace#resize#SussDisplayResolutionCommand(use_secondary) abort
+function! s:SussDisplayResolutionCommand(use_secondary) abort
   if has("gui_gtk2") || has("gui_gtk3")
-    return g:embrace#resize#SussDisplayResolutionCommand_GTK(a:use_secondary)
+    return s:SussDisplayResolutionCommand_GTK(a:use_secondary)
   elseif has("macunix")
-    return g:embrace#resize#SussDisplayResolutionCommand_macOS(a:use_secondary)
+    return s:SussDisplayResolutionCommand_macOS(a:use_secondary)
   endif
 endfunction
 
@@ -435,7 +435,7 @@ function! g:embrace#resize#SussDisplayResolutionPattern() abort
   endif
 endfunction
 
-function! g:embrace#resize#SussDisplayResolutionCommand_GTK(use_secondary) abort
+function! s:SussDisplayResolutionCommand_GTK(use_secondary) abort
   let l:filter_str = "' connected primary'"
   if a:use_secondary
     let l:filter_str = "-v " .. l:filter_str .. " | grep ' connected '"
@@ -462,7 +462,7 @@ endfunction
 "     https://daringfireball.net/2006/12/display_size_applescript_the_lazy_way
 " - BWARE: AppleScript fails if Desktop is disabled ("hidden"):
 "     defaults write com.apple.finder CreateDesktop -bool false
-function! g:embrace#resize#SussDisplayResolutionCommand_macOS__AppleScript(use_secondary) abort
+function! s:SussDisplayResolutionCommand_macOS__AppleScript(use_secondary) abort
   " E.g., '0, 0, 2560, 1440' → '2560, 1440, 0, 0'
   return "osascript -e 'tell application \"Finder\" to get bounds of window of desktop'"
     \ . " | sed -E 's/^([0-9]+), ([0-9]+), ([0-9]+), ([0-9]+)$/\\3, \\4, \\1, \\2/'"
@@ -476,7 +476,7 @@ endfunction
 "
 "       ...
 "             Resolution: 2560 x 1440 (QHD/WQHD - Wide Quad High Definition)
-function! g:embrace#resize#SussDisplayResolutionCommand_macOS(use_secondary) abort
+function! s:SussDisplayResolutionCommand_macOS(use_secondary) abort
   return "system_profiler SPDisplaysDataType"
     \ . " | grep '^ \\+Resolution:'"
     \ . " | head -n 1"
