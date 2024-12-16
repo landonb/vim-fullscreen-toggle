@@ -255,12 +255,12 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
 
     " ***
 
-    let use_secondary = 0
+    let l:use_secondary = 0
     if exists('g:fstoggle_use_secondary_display')
-      let use_secondary = g:fstoggle_use_secondary_display
+      let l:use_secondary = g:fstoggle_use_secondary_display
     endif
 
-    let dimensions = s:DisplayOffsetAndResolution(use_secondary)
+    let dimensions = s:DisplayOffsetAndResolution(l:use_secondary)
     let [xoff, yoff, size_w, size_h] = dimensions
 
     if a:sticky_x == 1
