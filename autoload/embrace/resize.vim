@@ -16,7 +16,7 @@
 "
 " - BONUS: Shift-F11 toggle puts Vim in right-half of screen.
 "
-" - To use your own bindings, define g:TBVIMCreateDefaultMappings = 0
+" - To use your own bindings, define g:vim_fullscreen_toggle_disable = 1
 "   to skip the <F11> and <S-F11> mappings, and then define your own.
 
 " WHY THIS PLUGIN:

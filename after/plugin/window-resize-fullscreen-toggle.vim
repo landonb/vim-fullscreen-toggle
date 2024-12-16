@@ -40,6 +40,12 @@ noremap <silent> <unique> <script> <Plug>ToggleFullscreen_RightHalf :call g:embr
 " ***
 
 function! s:CreateMaps()
+  if exists("g:vim_fullscreen_toggle_disable")
+      \ && g:vim_fullscreen_toggle_disable
+
+    return
+  endif
+
   nmap <F11> <Plug>ToggleFullscreen_Fill
   imap <F11> <C-O><Plug>ToggleFullscreen_Fill
 
@@ -47,9 +53,5 @@ function! s:CreateMaps()
   imap <S-F11> <C-O><Plug>ToggleFullscreen_RightHalf
 endfunction
 
-if !exists("g:TBVIMCreateDefaultMappings") || g:TBVIMCreateDefaultMappings
-  call s:CreateMaps()
-endif
-
-" +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ "
+call s:CreateMaps()
 

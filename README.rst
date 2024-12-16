@@ -36,10 +36,15 @@ After resizing, It also adjusts vertical splits to be equal widths.
 ===========================  ============================  ==============================================================================
 
 Override
---------
+========
 
-To use your own mappings, define ``g:TBVIMCreateDefaultMappings = 0`` to
-inhibit the ``<F11>`` and ``<S-F11>`` mappings, and then define your own.
+By default, this plugin will define both ``<F11>`` and ``<S-F11>`` maps,
+and it'll run on startup (to set window dimensions to mostly fullscreen).
+
+If you'd like to define your own maps and to call resize on your own time,
+you can inhibit the default behavior by setting a global variable::
+
+  let g:vim_fullscreen_toggle_disable = 1
 
 Installation
 ============

@@ -36,7 +36,17 @@ let g:loaded_vim_fullscreen_toggle_on_startup = 1
 " - ALTLY: To start maximized in MATE (using MATE's <Alt-space x>) try:
 "     au GUIEnter * simalt ~x
 
-if has("gui_running")
-  call g:embrace#resize#ToggleResizeWindow(0)
-endif
+function! s:InitWindowSize()
+  if exists("g:vim_fullscreen_toggle_disable")
+      \ && g:vim_fullscreen_toggle_disable
+
+    return
+  endif
+
+  if has("gui_running")
+    call g:embrace#resize#ToggleResizeWindow(0)
+  endif
+endfunction
+
+call s:InitWindowSize()
 
