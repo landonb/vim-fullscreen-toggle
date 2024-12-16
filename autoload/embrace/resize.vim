@@ -84,7 +84,7 @@
 " 
 "  let g:fstoggle_use_secondary_display = 0
 "  let g:fstoggle_partial_w = 0.80
-"  let g:fstoggle_limit_h = 0.90
+"  let g:fstoggle_partial_h = 0.90
 "  let g:fstoggle_pixels_per_col = 7.014
 "  let g:fstoggle_pixels_per_row = 16.180
 "
@@ -231,12 +231,12 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
 
   if (s:state_toggle != s:st_user_dims)
     let l:partial_w = 1
-    let limit_h = 1
+    let l:partial_h = 1
 
     if s:state_toggle == s:st_fullscreen
       " Set Totally Fullscreen vars
       let l:partial_w = 1
-      let limit_h = 1
+      let l:partial_h = 1
     else
       " Set Mostly Fullscreen vars
       if exists('g:fstoggle_partial_w')
@@ -245,10 +245,10 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
         let l:partial_w = s:partial_w
       endif
 
-      if exists('g:fstoggle_limit_h')
-        let limit_h = g:fstoggle_limit_h
+      if exists('g:fstoggle_partial_h')
+        let l:partial_h = g:fstoggle_partial_h
       else
-        let limit_h = s:partial_h
+        let l:partial_h = s:partial_h
       endif
     endif
 
@@ -280,10 +280,10 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
     endif
 
     let xoff = str2nr(xoff + ((size_w * (1 - l:partial_w)) / 2))
-    let yoff = str2nr(yoff + ((size_h * (1 - limit_h)) / 2))
+    let yoff = str2nr(yoff + ((size_h * (1 - l:partial_h)) / 2))
 
     let vim_x = str2nr(l:partial_w * size_w / pixels_per_col)
-    let vim_y = str2nr(limit_h * size_h / pixels_per_row)
+    let vim_y = str2nr(l:partial_h * size_h / pixels_per_row)
 
     if s:trace == 1
       echom 'DOAR: xoff: (' .. xoff .. ', ' .. yoff .. ') / '

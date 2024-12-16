@@ -46,11 +46,11 @@ function! s:CreateMaps()
     return
   endif
 
-  nmap <F11> <Plug>ToggleFullscreen_Fill
-  imap <F11> <C-O><Plug>ToggleFullscreen_Fill
+  nnoremap <F11> <Plug>ToggleFullscreen_Fill
+  inoremap <F11> <C-O><Plug>ToggleFullscreen_Fill
 
-  nmap <S-F11> <Plug>ToggleFullscreen_RightHalf
-  imap <S-F11> <C-O><Plug>ToggleFullscreen_RightHalf
+  nnoremap <S-F11> <Plug>ToggleFullscreen_RightHalf
+  inoremap <S-F11> <C-O><Plug>ToggleFullscreen_RightHalf
 endfunction
 
 call s:CreateMaps()
