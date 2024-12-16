@@ -261,11 +261,11 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
     endif
 
     let l:dimensions = s:DisplayOffsetAndResolution(l:use_secondary)
-    let [xoff, yoff, size_w, size_h] = l:dimensions
+    let [l:xoff, yoff, size_w, size_h] = l:dimensions
 
     if a:sticky_x == 1
       let l:partial_w = 0.5
-      let xoff = str2nr(xoff + (size_w / 2))
+      let l:xoff = str2nr(l:xoff + (size_w / 2))
     endif
 
     if exists('g:fstoggle_pixels_per_col')
@@ -280,14 +280,14 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
       let pixels_per_row = s:pixels_per_row
     endif
 
-    let xoff = str2nr(xoff + ((size_w * (1 - l:partial_w)) / 2))
+    let l:xoff = str2nr(l:xoff + ((size_w * (1 - l:partial_w)) / 2))
     let yoff = str2nr(yoff + ((size_h * (1 - l:partial_h)) / 2))
 
     let vim_x = str2nr(l:partial_w * size_w / pixels_per_col)
     let vim_y = str2nr(l:partial_h * size_h / pixels_per_row)
 
     if s:trace == 1
-      echom 'DOAR: xoff: (' .. xoff .. ', ' .. yoff .. ') / '
+      echom 'DOAR: xoff: (' .. l:xoff .. ', ' .. yoff .. ') / '
         \ .. 'size: (' .. size_w .. ' x ' .. size_h .. ') // '
         \ .. 'new sz: (' .. vim_x .. ' x ' .. vim_y .. ') // '
         \ .. 'state_toggle: ' .. s:state_toggle .. ' / '
@@ -295,7 +295,7 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
     endif
 
     execute 'set columns=' .. vim_x .. ' lines=' .. vim_y
-    execute 'winpos ' .. xoff .. ' ' .. yoff
+    execute 'winpos ' .. l:xoff .. ' ' .. yoff
   endif
 
   " ***
@@ -391,7 +391,7 @@ endfunction
 
 function! s:DisplayOffsetAndResolution(use_secondary) abort
   " Default, in case the command fails.
-  let [xoff, yoff, dw, dh] = [0, 0, 1920, 1080]
+  let [l:xoff, yoff, dw, dh] = [0, 0, 1920, 1080]
 
   let system_cmd = s:SussDisplayResolutionCommand(a:use_secondary)
 
@@ -400,7 +400,7 @@ function! s:DisplayOffsetAndResolution(use_secondary) abort
   if v:shell_error > 0
     echom 'vim-fillscreen-toggle: system call failed: ' .. v:shell_error
 
-    return [xoff, yoff, dw, dh]
+    return [l:xoff, yoff, dw, dh]
   endif
 
   let pattern = s:SussDisplayResolutionPattern()
@@ -409,7 +409,7 @@ function! s:DisplayOffsetAndResolution(use_secondary) abort
   if len(matches) == 0
     echom 'vim-fillscreen-toggle: no matches!?'
 
-    return [xoff, yoff, dw, dh]
+    return [l:xoff, yoff, dw, dh]
   endif
 
   " Split resolution by [width]x[height] and convert the string to a
@@ -418,7 +418,7 @@ function! s:DisplayOffsetAndResolution(use_secondary) abort
   if match_w == 0 || match_h == 0
     echom 'vim-fillscreen-toggle: match size 0!?'
 
-    return [xoff, yoff, dw, dh]
+    return [l:xoff, yoff, dw, dh]
   endif
 
   return [match_xoff, match_yoff, match_w, match_h]
