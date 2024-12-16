@@ -82,11 +82,11 @@
 
 " USAGE: Override these from your startup plug:
 " 
-"  let g:resize_fullscreen_use_secondary_display = 0
-"  let g:resize_fullscreen_limit_w = 0.80
-"  let g:resize_fullscreen_limit_h = 0.90
-"  let g:resize_fullscreen_pixels_per_col = 7.014
-"  let g:resize_fullscreen_pixels_per_row = 16.180
+"  let g:fstoggle_use_secondary_display = 0
+"  let g:fstoggle_limit_w = 0.80
+"  let g:fstoggle_limit_h = 0.90
+"  let g:fstoggle_pixels_per_col = 7.014
+"  let g:fstoggle_pixels_per_row = 16.180
 "
 " MAYBE/2024-03-04: Let user set any of x,y,w,h directly,
 " and/or let user specify offset_x_weight, e.g., to nudge
@@ -224,14 +224,14 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
       let limit_h = 1
     else
       " Set Mostly Fullscreen vars
-      if exists('g:resize_fullscreen_limit_w')
-        let limit_w = g:resize_fullscreen_limit_w
+      if exists('g:fstoggle_limit_w')
+        let limit_w = g:fstoggle_limit_w
       else
         let limit_w = s:partial_w
       endif
 
-      if exists('g:resize_fullscreen_limit_h')
-        let limit_h = g:resize_fullscreen_limit_h
+      if exists('g:fstoggle_limit_h')
+        let limit_h = g:fstoggle_limit_h
       else
         let limit_h = s:partial_h
       endif
@@ -240,8 +240,8 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
     " ***
 
     let use_secondary = 0
-    if exists('g:resize_fullscreen_use_secondary_display')
-      let use_secondary = g:resize_fullscreen_use_secondary_display
+    if exists('g:fstoggle_use_secondary_display')
+      let use_secondary = g:fstoggle_use_secondary_display
     endif
 
     let dimensions = s:DisplayOffsetAndResolution(use_secondary)
@@ -266,13 +266,13 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
     "   in macOS on the same monitor, with hidden menubar and Dock.
 
     let pixels_per_col = 7.014
-    if exists('g:resize_fullscreen_pixels_per_col')
-      let pixels_per_col = g:resize_fullscreen_pixels_per_col
+    if exists('g:fstoggle_pixels_per_col')
+      let pixels_per_col = g:fstoggle_pixels_per_col
     endif
 
     let pixels_per_row = 16.180
-    if exists('g:resize_fullscreen_pixels_per_row')
-      let pixels_per_row = g:resize_fullscreen_pixels_per_row
+    if exists('g:fstoggle_pixels_per_row')
+      let pixels_per_row = g:fstoggle_pixels_per_row
     endif
 
     let xoff = str2nr(xoff + ((size_w * (1 - limit_w)) / 2))
