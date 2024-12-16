@@ -547,14 +547,14 @@ endfunction
 
 " COPYD/2024-03-04: https://stackoverflow.com/a/18812122
 function! s:Reduce(fcn, list) abort
-  let [acc; tail] = a:list
+  let [l:acc; l:tail] = a:list
 
-  while !empty(tail)
-    let [head; tail] = tail
-    let acc = a:fcn(acc, head)
+  while !empty(l:tail)
+    let [l:head; l:tail] = tail
+    let l:acc = a:fcn(l:acc, l:head)
   endwhile
 
-  return acc
+  return l:acc
 endfunction
 
 " +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ "
