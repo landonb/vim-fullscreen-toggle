@@ -128,6 +128,8 @@ let s:state_toggle = s:st_init
 let s:partial_w = 0.80
 let s:partial_h = 0.90
 
+let s:resize_pending = 0
+
 " DEVEL: Enable this for trace.
 let s:trace = 0
 " let s:trace = 1
@@ -137,6 +139,10 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
     let s:state_toggle = a:new_state
   endif
 
+  " If user tries toggling too fast, s:prev_* won't be caught up.
+  if s:resize_pending
+
+    return
   endif
 
   call s:SaveCurrDimensions()
@@ -164,7 +170,7 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
 
   " ***
 
-  call s:SavePrevDimensions('reset')
+  call EmbraceResizeSavePrevDimensions('reset')
 
   if s:trace == 1
     echom 'user dim: user_win: (' .. s:user_win_x .. ', ' .. s:user_win_y .. ') / '
@@ -299,7 +305,23 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
 
   call g:embrace#resize#ResizeVerticalWindows()
 
-  call s:SavePrevDimensions('after')
+  " Vim might still be resizing. Be patient.
+  " - See comment above VimResized, below, for more.
+
+  " Just FYI when tracing, to see that dims. not immed. updated.
+  call EmbraceResizeSavePrevDimensions('after')
+
+  let s:resize_pending = 1
+
+  " At too quick a callback, if you run the toggle too fast, it won't
+  " capture the correct resize dimensions, and the user dims. will be
+  " overwritten (so then you'll be toggling between just mostly
+  " fullyscreen and fully fullscreen).
+  " - At 75 msec. or more, author has not been able to break the cycle.
+  "   - At 0, 25, or 50 msec., if I <F11> quickly, I can break it.
+  let empirical_timeout_msec = 75
+
+  let timer_id = timer_start(l:empirical_timeout_msec, "EmbraceResizeSavePrevDimensions")
 endfunction
 
 " ***
@@ -311,16 +333,18 @@ function! s:SaveCurrDimensions() abort
   let s:curr_vim_y = &lines
 endfunction
 
-function! s:SavePrevDimensions(msg = 0) abort
+function! EmbraceResizeSavePrevDimensions(timer_id_or_msg = 0) abort
   let s:prev_win_x = getwinposx()
   let s:prev_win_y = getwinposy()
   let s:prev_vim_x = &columns
   let s:prev_vim_y = &lines
 
+  let s:resize_pending = 0
+
   if s:trace == 1
     echom 'PREV: prev_win: (' .. s:prev_win_x .. ', ' .. s:prev_win_y .. ') / '
       \ .. 'prev_vim: (' .. s:prev_vim_x .. ' x ' .. s:prev_vim_y .. ') / '
-      \ .. 'timer_id_or_msg: ' .. a:msg
+      \ .. 'timer_id_or_msg: ' .. a:timer_id_or_msg
   endif
 endfunction
 
@@ -330,6 +354,20 @@ function! s:SaveUserDimensions() abort
   let s:user_vim_x = &columns
   let s:user_vim_y = &lines
 endfunction
+
+" ***
+
+" This event fires twice before the end of ToggleResizeWindow, i.e.,
+" after each of the `set columns` and `winpos` calls. But it shows
+" the same (old) dimensions as calling EmbraceResizeSavePrevDimensions()
+" (or checking dim) at the end of ToggleResizeWindow.
+" - Hence the timer kludge, because this doesn't work.
+"
+"   augroup embrace_resize_autocommands
+"     au!
+"
+"     autocmd VimResized * call EmbraceResizeSavePrevDimensions(-1)
+"   augroup END
 
 " +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ "
 
