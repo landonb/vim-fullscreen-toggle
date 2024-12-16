@@ -391,37 +391,39 @@ endfunction
 
 function! s:DisplayOffsetAndResolution(use_secondary) abort
   " Default, in case the command fails.
-  let [l:xoff, l:yoff, dw, dh] = [0, 0, 1920, 1080]
+  let [l:xoff, l:yoff, l:dw, l:dh] = [0, 0, 1920, 1080]
 
-  let system_cmd = s:SussDisplayResolutionCommand(a:use_secondary)
+  let l:system_cmd = s:SussDisplayResolutionCommand(a:use_secondary)
 
   " Get resolution from xrandr/osascript, and match for the resolution.
-  let dimensions = system(system_cmd)
+  let l:dimensions = system(l:system_cmd)
   if v:shell_error > 0
     echom 'vim-fillscreen-toggle: system call failed: ' .. v:shell_error
 
-    return [l:xoff, l:yoff, dw, dh]
+    return [l:xoff, l:yoff, l:dw, l:dh]
   endif
 
-  let pattern = s:SussDisplayResolutionPattern()
+  let l:pattern = s:SussDisplayResolutionPattern()
 
-  let matches = dimensions->matchlist(pattern)
-  if len(matches) == 0
+  let l:matches = dimensions->matchlist(l:pattern)
+  if len(l:matches) == 0
     echom 'vim-fillscreen-toggle: no matches!?'
 
-    return [l:xoff, l:yoff, dw, dh]
+    return [l:xoff, l:yoff, l:dw, l:dh]
   endif
 
   " Split resolution by [width]x[height] and convert the string to a
   " number.
-  let [match_w, match_h, match_xoff, match_yoff] = matches[1:4]->map({_, match -> str2nr(match)})
-  if match_w == 0 || match_h == 0
+  let [l:match_w, l:match_h, l:match_xoff, l:match_yoff]
+    \ = matches[1:4]->map({_, match -> str2nr(match)})
+
+  if l:match_w == 0 || l:match_h == 0
     echom 'vim-fillscreen-toggle: match size 0!?'
 
-    return [l:xoff, l:yoff, dw, dh]
+    return [l:xoff, l:yoff, l:dw, l:dh]
   endif
 
-  return [match_xoff, match_yoff, match_w, match_h]
+  return [l:match_xoff, l:match_yoff, l:match_w, l:match_h]
 endfunction
 
 function! s:SussDisplayResolutionCommand(use_secondary) abort
