@@ -1,6 +1,6 @@
 *vim-fullscreen-toggle.txt*	For Vim version 7.4.	Last change: 2024 Mar 04
 
-Vim Fullscreen Toggle Commands and Features~
+VIM FULLSCREEN TOGGLE 💯 Cycle between fullscreen and user window sizes~
 
 FULLSCREEN TOGGLE COMMANDS		*vim-fs-toggle*
 
