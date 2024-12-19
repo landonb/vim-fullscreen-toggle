@@ -118,7 +118,6 @@ endif
 " +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ "
 
 " The state machine toggle states.
-let s:st_reset = 0
 let s:st_init = 1
 let s:st_mostly_fs = 2
 let s:st_fullscreen = 3
@@ -187,7 +186,7 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
         \ .. s:DimensionsAsString(l:curr_dim, 'curr')
     endif
 
-    if s:state_toggle != s:st_init && s:state_toggle != s:st_reset
+    if s:state_toggle != s:st_init
       let s:user_dim = l:curr_dim
     endif
 
@@ -608,7 +607,7 @@ function! g:embrace#resize#ResetWindowMostlyFullscreen(...) abort
   let l:sticky_x = 0
 
   " Specify reset to clear state and resize *mostly fullscreen*.
-  let l:new_state = s:st_reset
+  let l:new_state = s:st_init
 
   call g:embrace#resize#ToggleResizeWindow(l:sticky_x, l:new_state)
 endfunction
