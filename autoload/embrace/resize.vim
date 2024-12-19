@@ -176,6 +176,8 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
     return
   endif
 
+  let s:resize_pending = 1
+
   let l:curr_dim = s:GetCurrDimensions()
 
   let l:user_old = s:user_dim
@@ -314,8 +316,6 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
   if s:trace == 1
     echom 'AFTER: ' .. s:DimensionsAsString(s:GetCurrDimensions(), 'curr')
   endif
-
-  let s:resize_pending = 1
 
   let timer_id = timer_start(g:fullscreen_toggle_timeout, "EmbraceResizeSavePrevDimensions")
 endfunction
