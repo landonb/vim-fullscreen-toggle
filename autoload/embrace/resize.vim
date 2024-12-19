@@ -144,8 +144,10 @@ let s:partial_h = 0.90
 "     :echo &columns → 365 / :echo &lines → 89 / `wmctrl -lG | grep vim` → 2560x1345
 "   It follows:
 "     2560/365 → 7.014 pixels/column / 1440/89 → 16.180 pixels/line
-" - SAVVY/2024-12-16: These same values work well for the author
+" - SAVVY/2024-12-16: These same values work pretty well for the author
 "   in macOS on the same monitor, with hidden menubar and hidden Dock.
+"   - Although I decrease px/row to increase fulllscreen window height.
+"       let g:fstoggle_pixels_per_row = 14.580
 "
 " USAGE: User can Override with, e.g.:
 "   let g:fstoggle_pixels_per_col = 7.014
