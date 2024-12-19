@@ -299,14 +299,6 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
 
   " ***
 
-  if (s:state_toggle == s:st_user_dims)
-    let s:state_toggle = s:st_mostly_fs
-  elseif (s:state_toggle == s:st_mostly_fs)
-    let s:state_toggle = s:st_fullscreen
-  elseif (s:state_toggle == s:st_fullscreen)
-    let s:state_toggle = s:st_user_dims
-  endif
-
   call s:ResizeVerticalWindows()
 
   " Vim might still be resizing. Be patient.
@@ -325,11 +317,23 @@ endfunction
 function! EmbraceResizeSavePrevDimensions(timer_id = 0) abort
   let s:prev_dim = s:GetCurrDimensions()
 
+  call s:StepState()
+
   let s:resize_pending = 0
 
   if s:trace == 1
     echom 'TIMER: next state: ' .. s:state_toggle
       \ .. ' / ' .. s:DimensionsAsString(s:prev_dim, 'prev')
+  endif
+endfunction
+
+function! s:StepState() abort
+  if (s:state_toggle == s:st_user_dims)
+    let s:state_toggle = s:st_mostly_fs
+  elseif (s:state_toggle == s:st_mostly_fs)
+    let s:state_toggle = s:st_fullscreen
+  elseif (s:state_toggle == s:st_fullscreen)
+    let s:state_toggle = s:st_user_dims
   endif
 endfunction
 
