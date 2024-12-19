@@ -90,6 +90,33 @@
 "  let g:fstoggle_pixels_per_col = 7.014
 "  let g:fstoggle_pixels_per_row = 16.180
 
+" +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ "
+
+" At too quick a callback, if you run the toggle too fast, it won't
+" capture the correct resize dimensions, and the user dims. will be
+" overwritten (so then you'll be toggling between just mostly
+" fullyscreen and fully fullscreen).
+" - At at least 125 msec. or below, if author mashes <F11> 'too quickly',
+"   I see issues detecting valid dims changes. This causes user dims to
+"   be forgotten.
+"   - For example, many times after going to fullscreen, if the timer_start
+"     callback runs too soon, it doesn't capture the new 0,0 x,y for
+"     fullscreen, but some other nonzero x,y values. Indeed, after <F11>
+"     to fully fullscreen, when I'd inspect the dims manually:
+"       echom 'x,y: ' .. getwinposx() .. 'x' .. getwinposy()
+"     I'd see 0,0 (fullscreen), which wasn't what the timer callback
+"     reported. But with a longer delay, the timer callback seems to
+"     read the settled coordinates. (This isn't a perfect science. I
+"     tried to monitor VimResized, but it, too, would fire before
+"     getwinposx(), getwinposy(), &columns, and &lines would start to
+"     report the new values. And I'm not aware what else we might do
+"     other than use a kludgy timer callback.)
+if !exists('g:fullscreen_toggle_timeout')
+  let g:fullscreen_toggle_timeout = 250
+endif
+
+" +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ "
+
 " The state machine toggle states.
 let s:st_reset = 0
 let s:st_init = 1
@@ -290,15 +317,7 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
 
   let s:resize_pending = 1
 
-  " At too quick a callback, if you run the toggle too fast, it won't
-  " capture the correct resize dimensions, and the user dims. will be
-  " overwritten (so then you'll be toggling between just mostly
-  " fullyscreen and fully fullscreen).
-  " - At 75 msec. or more, author has not been able to break the cycle.
-  "   - At 0, 25, or 50 msec., if I <F11> quickly, I can break it.
-  let l:empirical_timeout_msec = 75
-
-  let timer_id = timer_start(l:empirical_timeout_msec, "EmbraceResizeSavePrevDimensions")
+  let timer_id = timer_start(g:fullscreen_toggle_timeout, "EmbraceResizeSavePrevDimensions")
 endfunction
 
 " ***
