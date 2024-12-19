@@ -205,8 +205,6 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
 
   " ***
 
-  call EmbraceResizeSavePrevDimensions('reset')
-
   " Check if next state restores user dimensions, unless those dimensions
   " match either the fullscreen or mostly fullscreen dimensions.
   if (s:state_toggle == s:st_user_dims)
@@ -322,7 +320,7 @@ endfunction
 
 " ***
 
-function! EmbraceResizeSavePrevDimensions(timer_id_or_msg = '') abort
+function! EmbraceResizeSavePrevDimensions(timer_id = 0) abort
   let s:prev_dim = s:GetCurrDimensions()
 
   let s:resize_pending = 0
