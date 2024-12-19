@@ -6,20 +6,6 @@
 
 " +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ "
 
-" USAGE: Unlet var (or nix finish) & press <F9> to reload this plugin.
-" USING: https://github.com/landonb/vim-source-reloader#↩️
-"
-"  silent! unlet g:loaded_vim_fullscreen_toggle_create_maps
-
-if exists("g:loaded_vim_fullscreen_toggle_create_maps") || &cp || v:version < 800
-
-  finish
-endif
-
-let g:loaded_vim_fullscreen_toggle_create_maps = 1
-
-" +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ "
-
 " *** Mappings.
 
 " Reminders:
@@ -30,7 +16,7 @@ let g:loaded_vim_fullscreen_toggle_create_maps = 1
 " - <script> only resolves {rhs} characters using mappings local to this script.
 " - <buffer> constrains a mapping to the current buffer only, not what we want.
 " So while <silent> necessary, <unique> and <script> are not, but signal intent.
-function! s:CreateMapPlugs()
+function! g:embrace#fullscreen_toggle#CreateMapPlugs()
   silent! unmap <silent> <unique> <script> <Plug>ToggleFullscreen_Fill
   silent! unmap <silent> <unique> <script> <Plug>ToggleFullscreen_RightHalf
   silent! unmap <silent> <unique> <script> <Plug>ToggleFullscreen_Reset
@@ -42,14 +28,8 @@ endfunction
 
 " ***
 
-function! s:CreateMaps()
-  if exists("g:vim_fullscreen_toggle_disable")
-      \ && g:vim_fullscreen_toggle_disable
-
-    return
-  endif
-
-  call s:CreateMapPlugs()
+function! g:embrace#fullscreen_toggle#CreateMaps()
+  call g:embrace#fullscreen_toggle#CreateMapPlugs()
 
   nnoremap <F11> <Plug>ToggleFullscreen_Fill
   inoremap <F11> <C-O><Plug>ToggleFullscreen_Fill
@@ -59,6 +39,4 @@ function! s:CreateMaps()
 
   command! -nargs=0 ToggleFullscreenReset :call g:embrace#resize#ResetWindowMostlyFullscreen(0)
 endfunction
-
-call s:CreateMaps()
 
