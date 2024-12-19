@@ -30,14 +30,15 @@ let g:loaded_vim_fullscreen_toggle_create_maps = 1
 " - <script> only resolves {rhs} characters using mappings local to this script.
 " - <buffer> constrains a mapping to the current buffer only, not what we want.
 " So while <silent> necessary, <unique> and <script> are not, but signal intent.
+function! s:CreateMapPlugs()
+  silent! unmap <silent> <unique> <script> <Plug>ToggleFullscreen_Fill
+  silent! unmap <silent> <unique> <script> <Plug>ToggleFullscreen_RightHalf
+  silent! unmap <silent> <unique> <script> <Plug>ToggleFullscreen_Reset
 
-silent! unmap <silent> <unique> <script> <Plug>ToggleFullscreen_Fill
-silent! unmap <silent> <unique> <script> <Plug>ToggleFullscreen_RightHalf
-silent! unmap <silent> <unique> <script> <Plug>ToggleFullscreen_Reset
-
-noremap <silent> <unique> <script> <Plug>ToggleFullscreen_Fill :call g:embrace#resize#ToggleResizeWindow(0)<CR>
-noremap <silent> <unique> <script> <Plug>ToggleFullscreen_RightHalf :call g:embrace#resize#ToggleResizeWindow(1)<CR>
-noremap <silent> <unique> <script> <Plug>ToggleFullscreen_Reset :call g:embrace#resize#ResetWindowMostlyFullscreen(0)<CR>
+  noremap <silent> <unique> <script> <Plug>ToggleFullscreen_Fill :call g:embrace#resize#ToggleResizeWindow(0)<CR>
+  noremap <silent> <unique> <script> <Plug>ToggleFullscreen_RightHalf :call g:embrace#resize#ToggleResizeWindow(1)<CR>
+  noremap <silent> <unique> <script> <Plug>ToggleFullscreen_Reset :call g:embrace#resize#ResetWindowMostlyFullscreen(0)<CR>
+endfunction
 
 " ***
 
@@ -47,6 +48,8 @@ function! s:CreateMaps()
 
     return
   endif
+
+  call s:CreateMapPlugs()
 
   nnoremap <F11> <Plug>ToggleFullscreen_Fill
   inoremap <F11> <C-O><Plug>ToggleFullscreen_Fill
