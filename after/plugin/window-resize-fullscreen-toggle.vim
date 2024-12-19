@@ -33,9 +33,11 @@ let g:loaded_vim_fullscreen_toggle_create_maps = 1
 
 silent! unmap <silent> <unique> <script> <Plug>ToggleFullscreen_Fill
 silent! unmap <silent> <unique> <script> <Plug>ToggleFullscreen_RightHalf
+silent! unmap <silent> <unique> <script> <Plug>ToggleFullscreen_Reset
 
 noremap <silent> <unique> <script> <Plug>ToggleFullscreen_Fill :call g:embrace#resize#ToggleResizeWindow(0)<CR>
 noremap <silent> <unique> <script> <Plug>ToggleFullscreen_RightHalf :call g:embrace#resize#ToggleResizeWindow(1)<CR>
+noremap <silent> <unique> <script> <Plug>ToggleFullscreen_Reset :call g:embrace#resize#ResetWindowMostlyFullscreen(0)<CR>
 
 " ***
 
@@ -51,6 +53,8 @@ function! s:CreateMaps()
 
   nnoremap <S-F11> <Plug>ToggleFullscreen_RightHalf
   inoremap <S-F11> <C-O><Plug>ToggleFullscreen_RightHalf
+
+  command! -nargs=0 ToggleFullscreenReset :call g:embrace#resize#ResetWindowMostlyFullscreen(0)
 endfunction
 
 call s:CreateMaps()
