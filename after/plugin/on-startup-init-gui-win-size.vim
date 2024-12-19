@@ -34,6 +34,7 @@ let g:loaded_vim_fullscreen_toggle_on_startup = 1
 "     winpos 648 181
 "
 " - ALTLY: To start maximized in MATE (using MATE's <Alt-space x>) try:
+"
 "     au GUIEnter * simalt ~x
 
 function! s:InitWindowSize()
