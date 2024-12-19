@@ -167,6 +167,7 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
 
   " If user tries toggling too fast, s:prev_dim won't be caught up.
   if s:resize_pending
+    echom 'fullscreen-toggle: too fast!'
 
     return
   endif
