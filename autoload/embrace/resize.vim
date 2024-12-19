@@ -62,6 +62,8 @@
 "       this plugin. (See also *Restore* to undo the maximize.)
 "
 "   - This plugin is untested on Windows.
+"
+"   - This plugin likely does not work in Wayland.
 
 " NOTES: The Shift-F11 is similar to some desktop manager mappings:
 "
@@ -87,11 +89,6 @@
 "  let g:fstoggle_partial_h = 0.90
 "  let g:fstoggle_pixels_per_col = 7.014
 "  let g:fstoggle_pixels_per_row = 16.180
-"
-" MAYBE/2024-03-04: Let user set any of x,y,w,h directly,
-" and/or let user specify offset_x_weight, e.g., to nudge
-" window off-center (I like mine a little to the right of
-" center).
 
 " For toggling back to user dimensions.
 let s:user_win_x = 0
@@ -125,7 +122,12 @@ let s:st_user_dims = 4
 
 let s:state_toggle = s:st_init
 
-" For s:state_toggle == s:st_mostly_fs
+" Percentage of fullscreen width and height,
+"   for s:state_toggle == s:st_mostly_fs
+"
+" USAGE: User can override with, e.g.:
+"   let g:fstoggle_partial_w = 0.80
+"   let g:fstoggle_partial_h = 0.90
 let s:partial_w = 0.80
 let s:partial_h = 0.90
 
@@ -136,11 +138,15 @@ let s:partial_h = 0.90
 "   other monitor/display settings the author might be using, some values for
 "   a fullscreen GVim window in a 2560x1440 display (with a MATE titlebar, and
 "   3 rows of mate-panel):
-"     :echo &columns → 365 / :echo &lines → 89 / `wmctrl -lG | grep sampi` → 2560x1345
+"     :echo &columns → 365 / :echo &lines → 89 / `wmctrl -lG | grep vim` → 2560x1345
 "   It follows:
 "     2560/365 → 7.014 pixels/column / 1440/89 → 16.180 pixels/line
 " - SAVVY/2024-12-16: These same values work well for the author
-"   in macOS on the same monitor, with hidden menubar and Dock.
+"   in macOS on the same monitor, with hidden menubar and hidden Dock.
+"
+" USAGE: User can Override with, e.g.:
+"   let g:fstoggle_pixels_per_col = 7.014
+"   let g:fstoggle_pixels_per_row = 16.180
 let s:pixels_per_col = 7.014
 let s:pixels_per_row = 16.180
 
@@ -412,7 +418,7 @@ function! s:DisplayOffsetAndResolution(use_secondary) abort
     return [l:xoff, l:yoff, l:dw, l:dh]
   endif
 
-  " Split resolution by [width]x[height] and convert the string to a
+  " Split resolution by [width]x[height] and convert each string to a
   " number.
   let [l:match_w, l:match_h, l:match_xoff, l:match_yoff]
     \ = matches[1:4]->map({_, match -> str2nr(match)})
@@ -562,7 +568,7 @@ endfunction
 " Call on startup if you always want the same initial dimensions.
 "
 " - Accepts timer_id (or whatever...; ignored) because you'll want
-"   to call from timer while window dims settle.
+"   to schedule callback with timer_start while window dims settle.
 
 function! g:embrace#resize#ResetWindowMostlyFullscreen(...) abort
   " Sticky-X is used to resize to one-half of the display.
