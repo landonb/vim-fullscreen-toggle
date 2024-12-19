@@ -157,7 +157,12 @@ let s:resize_pending = 0
 
 " DEVEL: Enable this for trace.
 let s:trace = 0
-" let s:trace = 1
+let s:info = 0
+"  let s:trace = 1
+"  let s:info = 1
+"
+" Enable this while debugging to clear messages when you source this file.
+"  messages clear
 
 function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
   if a:new_state != ''
@@ -279,7 +284,7 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
     let l:vim_y = str2nr(l:partial_h * l:size_h / l:pixels_per_row)
 
     if s:trace == 1
-      echom 'DOAR: xoff: (' .. l:xoff .. ', ' .. l:yoff .. ') / '
+      echom 'resiz: xoff: (' .. l:xoff .. ', ' .. l:yoff .. ') / '
         \ .. 'size: (' .. l:size_w .. ' x ' .. l:size_h .. ') // '
         \ .. 'new sz: (' .. l:vim_x .. ' x ' .. l:vim_y .. ') // '
         \ .. 'state_toggle: ' .. s:state_toggle .. ' / '
