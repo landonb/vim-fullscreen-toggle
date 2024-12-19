@@ -178,6 +178,18 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
 
   let s:resize_pending = 1
 
+  call s:IfDimensionsChangedUpdateUserAndSetMostlyFsState(a:sticky_x)
+
+  call s:ChangeDimensionsIfUserStateOrFallbackMostlyFsState()
+
+  call s:ChangeDimensionsIfFsOrMostlyFsState(a:sticky_x)
+
+  call s:ResizeVerticalsAndSetTimerCallbackToFinish()
+endfunction
+
+" ***
+
+function! s:IfDimensionsChangedUpdateUserAndSetMostlyFsState(sticky_x) abort
   let l:curr_dim = s:GetCurrDimensions()
 
   let l:user_old = s:user_dim
@@ -211,9 +223,11 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
       \ .. ' / ' .. s:DimensionsAsString(s:user_dim, 'user')
       \ .. ' / ' .. s:DimensionsAsString(l:user_old, 'uold')
   endif
+endfunction
 
-  " ***
+" ***
 
+function! s:ChangeDimensionsIfUserStateOrFallbackMostlyFsState() abort
   " Check if next state restores user dimensions, unless those dimensions
   " match either the fullscreen or mostly fullscreen dimensions.
   if (s:state_toggle == s:st_user_dims)
@@ -238,9 +252,11 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
       let s:state_toggle = s:st_mostly_fs
     endif
   endif
+endfunction
 
-  " ***
+" ***
 
+function! s:ChangeDimensionsIfFsOrMostlyFsState(sticky_x) abort
   if (s:state_toggle != s:st_user_dims)
     if s:state_toggle == s:st_fullscreen
       " Set Totally Fullscreen vars
@@ -305,9 +321,11 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
     execute 'set columns=' .. l:vim_x .. ' lines=' .. l:vim_y
     execute 'winpos ' .. l:xoff .. ' ' .. l:yoff
   endif
+endfunction
 
-  " ***
+" ***
 
+function! s:ResizeVerticalsAndSetTimerCallbackToFinish() abort
   call s:ResizeVerticalWindows()
 
   " Vim might still be resizing. Be patient.
