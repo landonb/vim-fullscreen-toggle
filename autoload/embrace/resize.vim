@@ -226,9 +226,6 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
   " ***
 
   if (s:state_toggle != s:st_user_dims)
-    let l:partial_w = 1
-    let l:partial_h = 1
-
     if s:state_toggle == s:st_fullscreen
       " Set Totally Fullscreen vars
       let l:partial_w = 1
