@@ -37,6 +37,33 @@ let g:loaded_vim_fullscreen_toggle_on_startup = 1
 "
 "     au GUIEnter * simalt ~x
 
+" ***
+
+" Also, don't call resize right away, because, on startup, the
+"   window dimensions have not settled yet.
+"
+"   - If we call too early, the plugin will misintrepret the
+"     final dimensions, after they've settled, as user dimensions.
+"     Then the first time you hit <F11>, instead of fullscreen, the
+"     plugin will think the user manually resized the window, and
+"     it'll resize mostly fullscreen, but the dimensions won't
+"     actually change.
+"
+" - TNERR/2024-12-18: Via trial and error, it seems 75 msec. is too
+"   quick on startup (toggler records window dimensions before they've
+"   settled, so then next toggle assumes startup dims were user dims,
+"   and then it resizes to mostly fullscreen (again), so you end up
+"   with two toggle states using same dims (user and mostly fs)).
+"
+"   - I next tried 150 msec, which I haven't seen not work.
+"     (I didn't try anything less; and it's not like this
+"      affects startup time, anyway.)
+"
+" let l:empirical_timeout_msec = 75  " too quick!
+let s:empirical_timeout_msec = 150
+
+" ***
+
 function! s:InitWindowSize()
   if exists('g:vim_fullscreen_toggle_disable')
       \ && g:vim_fullscreen_toggle_disable
@@ -45,7 +72,10 @@ function! s:InitWindowSize()
   endif
 
   if has('gui_running')
-    call g:embrace#resize#ToggleResizeWindow(0, 0)
+    let timer_id = timer_start(
+      \ s:empirical_timeout_msec,
+      \ function('g:embrace#resize#ResetWindowMostlyFullscreen'),
+      \ )
   endif
 endfunction
 

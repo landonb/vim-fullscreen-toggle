@@ -177,11 +177,11 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
         \ .. 'curr_vim: (' .. s:curr_vim_x .. ' x ' .. s:curr_vim_y .. ')'
     endif
 
-    let s:state_toggle = s:st_mostly_fs
-
-    if s:state_toggle != s:st_init
+    if s:state_toggle != s:st_init && s:state_toggle != s:st_reset
       call s:SaveUserDimensions()
     endif
+
+    let s:state_toggle = s:st_mostly_fs
   endif
 
   " ***
@@ -558,4 +558,19 @@ function! s:Reduce(fcn, list) abort
 endfunction
 
 " +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ "
+
+" Call on startup if you always want the same initial dimensions.
+"
+" - Accepts timer_id (or whatever...; ignored) because you'll want
+"   to call from timer while window dims settle.
+
+function! g:embrace#resize#ResetWindowMostlyFullscreen(...) abort
+  " Sticky-X is used to resize to one-half of the display.
+  let l:sticky_x = 0
+
+  " Specify reset to clear state and resize *mostly fullscreen*.
+  let l:new_state = s:st_reset
+
+  call g:embrace#resize#ToggleResizeWindow(l:sticky_x, l:new_state)
+endfunction
 
