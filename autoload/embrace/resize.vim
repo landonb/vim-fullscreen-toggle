@@ -317,6 +317,8 @@ endfunction
 function! EmbraceResizeSavePrevDimensions(timer_id = 0) abort
   let s:prev_dim = s:GetCurrDimensions()
 
+  call s:CaptureState()
+
   call s:StepState()
 
   let s:resize_pending = 0
@@ -324,6 +326,17 @@ function! EmbraceResizeSavePrevDimensions(timer_id = 0) abort
   if s:trace == 1
     echom 'TIMER: next state: ' .. s:state_toggle
       \ .. ' / ' .. s:DimensionsAsString(s:prev_dim, 'prev')
+  endif
+endfunction
+
+function! s:CaptureState() abort
+  if (s:state_toggle == s:st_user_dims)
+    " Should be the same:
+    "   let s:user_dim = s:prev_dim
+  elseif (s:state_toggle == s:st_mostly_fs)
+    let s:most_dim = s:prev_dim
+  elseif (s:state_toggle == s:st_fullscreen)
+    let s:full_dim = s:prev_dim
   endif
 endfunction
 
