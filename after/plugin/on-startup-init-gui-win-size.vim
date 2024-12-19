@@ -37,13 +37,13 @@ let g:loaded_vim_fullscreen_toggle_on_startup = 1
 "     au GUIEnter * simalt ~x
 
 function! s:InitWindowSize()
-  if exists("g:vim_fullscreen_toggle_disable")
+  if exists('g:vim_fullscreen_toggle_disable')
       \ && g:vim_fullscreen_toggle_disable
 
     return
   endif
 
-  if has("gui_running")
+  if has('gui_running')
     call g:embrace#resize#ToggleResizeWindow(0, 0)
   endif
 endfunction
