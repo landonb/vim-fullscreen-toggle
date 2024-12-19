@@ -193,10 +193,12 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
         \ .. s:DimensionsAsString(l:curr_dim, 'curr')
     endif
 
-    if s:state_toggle != s:st_init
-      let s:user_dim = l:curr_dim
-    endif
+    " Either this is first time running, or dims changed since last time.
+    " - In either case, record curr dims as user dims.
+    "   - We'll remove user dims later if deemed same as fs or mostly fs.
+    let s:user_dim = l:curr_dim
 
+    " Always go mostly fs on first run, or after dims changed by user.
     let s:state_toggle = s:st_mostly_fs
   endif
 
@@ -215,9 +217,16 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
   " Check if next state restores user dimensions, unless those dimensions
   " match either the fullscreen or mostly fullscreen dimensions.
   if (s:state_toggle == s:st_user_dims)
+    if 0
+        \ || s:DimensionsEqual(s:user_dim, s:most_dim, 'user', 'most')
+        \ || s:DimensionsEqual(s:user_dim, s:full_dim, 'user', 'full')
+      " User dim. same as fullscreen or mostly-fs dimensions.
+      let s:user_dim = s:ResetDimensions()
+
+      if s:trace == 1 | echom 'reset USER dim' | endif
+    endif
+
     if (s:user_dim[s:dim_vim_x] > 0) && (s:user_dim[s:dim_vim_y] > 0)
-        \ && !s:DimensionsEqual(s:user_dim, s:most_dim, 'user', 'most')
-        \ && !s:DimensionsEqual(s:user_dim, s:full_dim, 'user', 'full')
       if s:trace == 1 | echom 'apply USER dim' | endif
 
       exec 'set columns=' .. s:user_dim[s:dim_vim_x] .. ' lines=' .. s:user_dim[s:dim_vim_y]
