@@ -2,15 +2,20 @@
 
 VIM FULLSCREEN TOGGLE 💯 Cycle between fullscreen and user window sizes~
 
-FULLSCREEN TOGGLE COMMANDS		*vim-fs-toggle*
+FULLSCREEN TOGGLE HELP			*vim-fullscreen-toggle*
 
-1. About This Plugin			|vim-fs-toggle|
-2. Fullscreen Toggle Commands		|vim-fs-toggle-cmds|
+1. About				|vim-fullscreen-toggle-about|
+2. Details				|vim-fullscreen-toggle-details|
+3. Commands				|vim-fullscreen-toggle-commands|
+3. Disablement				|vim-fullscreen-toggle-disablement|
 
 ==============================================================================
-1. About This Plugin			*vim-fs-toggle*
+1. About This Plugin			*vim-fullscreen-toggle-about*
 
 Display-aware Vim fullscreen toggle.
+
+==============================================================================
+2. Fullscreen Toggle Details		*vim-fullscreen-toggle-details*
 
 This plugin is a dual-display-aware version of an old trick:
 
@@ -27,7 +32,7 @@ After resizing, It also adjusts vertical splits to be equal widths.
 Project page: https://github.com/landonb/vim-fullscreen-toggle#💯
 
 ==============================================================================
-2. Fullscreen Toggle Commands		*vim-fs-toggle-cmds*
+3. Fullscreen Toggle Commands		*vim-fullscreen-toggle-commands*
 
 Resize gVim/MacVim window~
 
@@ -45,6 +50,8 @@ Resize gVim/MacVim window~
 			Like `<F11>`, cycles through 3 different window sizes,
 			but sets window width and position to right-half of display.
 
+==============================================================================
+4. Fullscreen Toggle Disablement	*vim-fullscreen-toggle-disablement*
 Override~
 
 By default, this plugin will define both `<F11>` and `<S-F11>` maps,
