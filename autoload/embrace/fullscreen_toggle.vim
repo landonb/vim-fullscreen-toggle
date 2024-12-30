@@ -61,31 +61,13 @@ endfunction
 
 " +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ "
 
-" *** Mappings.
+" *** Command maps
 
-" Reminders:
-" - noremap does not resolve {rhs} characters (so don't use when
-"   <Plug> is in the {rhs}, or the <Plug> won't be resolved).
-" - <silent> keeps the mapping from being echoed on the command line.
-" - <unique> is strict, and the map fails if the {lhs} name is already defined.
-" - <script> only resolves {rhs} characters using mappings local to this script.
-" - <buffer> constrains a mapping to the current buffer only, not what we want.
-" So while <silent> necessary, <unique> and <script> are not, but signal intent.
-function! g:embrace#fullscreen_toggle#CreateMapPlugs()
-  silent! unmap <silent> <unique> <script> <Plug>ToggleFullscreen_Fill
-  silent! unmap <silent> <unique> <script> <Plug>ToggleFullscreen_RightHalf
-  silent! unmap <silent> <unique> <script> <Plug>ToggleFullscreen_Reset
-
-  noremap <silent> <unique> <script> <Plug>ToggleFullscreen_Fill :call g:embrace#resize#ToggleResizeWindow(0)<CR>
-  noremap <silent> <unique> <script> <Plug>ToggleFullscreen_RightHalf :call g:embrace#resize#ToggleResizeWindow(1)<CR>
-  noremap <silent> <unique> <script> <Plug>ToggleFullscreen_Reset :call g:embrace#resize#ResetWindowMostlyFullscreen(0)<CR>
-endfunction
-
-" ***
+" <Plugs> are defined by the plugin/.
+" - CXREF:
+"   ~/.vim/pack/embrace-vim/start/vim-fullscreen-toggle/plugin/fullscreen-toggle.vim
 
 function! g:embrace#fullscreen_toggle#CreateMaps()
-  call g:embrace#fullscreen_toggle#CreateMapPlugs()
-
   nnoremap <F11> <Plug>ToggleFullscreen_Fill
   inoremap <F11> <C-O><Plug>ToggleFullscreen_Fill
 
