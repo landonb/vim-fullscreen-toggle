@@ -184,7 +184,7 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
 
   call s:ChangeDimensionsIfUserStateOrFallbackMostlyFsState()
 
-  call s:ChangeDimensionsIfFsOrMostlyFsState(a:sticky_x)
+  call s:ChangeDimensionsIfFsOrMostlyFsState(a:sticky_x, a:new_state)
 
   call s:ResizeVerticalsAndSetTimerCallbackToFinish()
 endfunction
@@ -258,7 +258,7 @@ endfunction
 
 " ***
 
-function! s:ChangeDimensionsIfFsOrMostlyFsState(sticky_x) abort
+function! s:ChangeDimensionsIfFsOrMostlyFsState(sticky_x, new_state) abort
   if (s:state_toggle != s:st_user_dims)
     if s:state_toggle == s:st_fullscreen
       " Set Totally Fullscreen vars
@@ -312,6 +312,8 @@ function! s:ChangeDimensionsIfFsOrMostlyFsState(sticky_x) abort
     let l:vim_x = str2nr(l:partial_w * l:size_w / l:pixels_per_col)
     let l:vim_y = str2nr(l:partial_h * l:size_h / l:pixels_per_row)
 
+    let [l:vim_x, l:vim_y] = s:EnsureMinimumSizeOnInit(a:new_state, l:vim_x, l:vim_y)
+
     if s:trace == 1
       echom 'resiz: xoff: (' .. l:xoff .. ', ' .. l:yoff .. ') / '
         \ .. 'size: (' .. l:size_w .. ' x ' .. l:size_h .. ') // '
@@ -323,6 +325,20 @@ function! s:ChangeDimensionsIfFsOrMostlyFsState(sticky_x) abort
     execute 'set columns=' .. l:vim_x .. ' lines=' .. l:vim_y
     execute 'winpos ' .. l:xoff .. ' ' .. l:yoff
   endif
+endfunction
+
+" ***
+
+function! s:EnsureMinimumSizeOnInit(new_state, vim_x, vim_y) abort
+  if a:new_state != s:st_init
+
+    return [a:vim_x, a:vim_y]
+  endif
+
+  let l:vim_x = max([a:vim_x, get(g:, 'fstoggle_on_init_min_columns', 0)])
+  let l:vim_y = max([a:vim_y, get(g:, 'fstoggle_on_init_min_lines', 0)])
+
+  return [l:vim_x, l:vim_y]
 endfunction
 
 " ***
