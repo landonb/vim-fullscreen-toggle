@@ -1,14 +1,14 @@
-#####################
-Vim Fullscreen Toggle
-#####################
+########################
+Vim Fullscreen Toggle 💯
+########################
 
 About This Plugin
 =================
 
 Display-aware Vim fullscreen toggle.
 
-Fullscreen Window Commands
-==========================
+Details
+=======
 
 This plugin is a dual-display-aware version of an old trick::
 
@@ -20,7 +20,30 @@ But that trick breaks when there's more than one monitor attached.
 
 This plugin restricts the resize to just one monitor.
 
-After resizing, It also adjusts vertical splits to be equal widths.
+After resizing, it also adjusts vertical splits to be equal widths.
+
+Finally, the toggle command cycles through three states:
+
+- Mostly fullscreen
+
+  - Because on some displays, fullscreen *is just too big!* — and
+    you might have to crank your head to edit some files. So this
+    state uses a *mostly* fullscreen window size.
+
+- Fully fullscreen
+
+  - Or thereabouts — Vim lets us set the number of text columns and
+    lines, and we can query the screen dimensions in pixels from the
+    OS. So we have to guess how many columns and lines is really
+    fullscreen.
+
+- User dimensions 
+
+  - If you resize the window yourself, the fullscreen toggle will
+    include these dimensions during the toggle cycle.
+
+Commands
+========
 
 ===========================  ============================  ==============================================================================
  Key Mapping                  Description                   Notes
