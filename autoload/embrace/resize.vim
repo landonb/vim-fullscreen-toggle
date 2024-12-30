@@ -12,12 +12,15 @@
 
 " AUDIENCE: Mostly MacVim users, but also useful for gVim with `xrandr`.
 
-" USAGE: Press F11 to resize gVim/MacVim, and cycle through sizes.
+" USAGE: See autoload/embrace/fullscreen_toggle.vim, which adds these
+" map commands if you call its CreateMaps():
+"
+" - Press F11 to resize gVim/MacVim, and cycle through sizes.
 "
 " - BONUS: Shift-F11 toggle puts Vim in right-half of screen.
 "
-" - To use your own bindings, define g:vim_fullscreen_toggle_disable = 1
-"   to skip the <F11> and <S-F11> mappings, and then define your own.
+" - To use your own bindings, call the CreateMapPlugs() fcn. instead,
+"   and then define your own map and command bindings.
 
 " WHY THIS PLUGIN:
 "
