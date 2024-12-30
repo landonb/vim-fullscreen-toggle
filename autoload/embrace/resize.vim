@@ -171,6 +171,12 @@ function! g:embrace#resize#ToggleResizeWindow(sticky_x, new_state = '') abort
     let s:state_toggle = a:new_state
   endif
 
+  if !has('timers')
+    echom "ALERT: vim-fullscreen-toggle requires Vim compiled with +timers"
+
+    return
+  endif
+
   " If user tries toggling too fast, s:prev_dim won't be caught up.
   if s:resize_pending
     echom 'fullscreen-toggle: too fast!'
