@@ -51,7 +51,7 @@ function! s:CreateMaps()
 
   " Wires <F11>, <S-F11>, and :ToggleFullscreenReset.
   " - CXREF:
-  "   ~/.vim/pack/embrace-vim/start/vim-fullscreen-toggle/autoload/embrace/fullscreen_toggle.vim
+  "   ~/.kit/nvim/embrace-vim/start/vim-fullscreen-toggle/autoload/embrace/fullscreen_toggle.vim
   call g:embrace#fullscreen_toggle#CreateMaps()
 endfunction
 

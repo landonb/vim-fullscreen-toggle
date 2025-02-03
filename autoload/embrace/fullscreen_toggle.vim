@@ -65,7 +65,7 @@ endfunction
 
 " <Plugs> are defined by the plugin/.
 " - CXREF:
-"   ~/.vim/pack/embrace-vim/start/vim-fullscreen-toggle/plugin/fullscreen-toggle.vim
+"   ~/.kit/nvim/embrace-vim/start/vim-fullscreen-toggle/plugin/fullscreen-toggle.vim
 
 function! g:embrace#fullscreen_toggle#CreateMaps()
   nnoremap <F11> <Plug>ToggleFullscreen_Fill
