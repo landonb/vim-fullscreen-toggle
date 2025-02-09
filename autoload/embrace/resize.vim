@@ -617,6 +617,13 @@ endfunction
 "   I think it's a far better approach.
 
 function! s:ResizeVerticalWindows() abort
+  let l:last_winnr = winnr('$')
+
+  if l:last_winnr == 1
+
+    return
+  endif
+
   " Use mkview/loadview to store current view, i.e., to maintain
   " current folds (otherwise Vim resets them when you reenter buffer).
   " NOTE: Use silent to avoid "E35: No file name" warning message.
@@ -636,7 +643,7 @@ function! s:ResizeVerticalWindows() abort
 
   " Numbers of windows that view target buffer which we will delete.
   "  \ 'win_screenpos(v:val)[0] == 1 && !<SID>IsWindowSpecial(v:val)')
-  let wnums = filter(range(1, winnr('$')),
+  let wnums = filter(range(1, l:last_winnr),
     \ 'win_screenpos(v:val)[0] == ' .. l:first_row
     \ .. ' && (v:val != ' .. l:proj_winnr ..')')
 
