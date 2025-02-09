@@ -629,10 +629,21 @@ function! s:ResizeVerticalWindows() abort
     let l:proj_winnr = bufwinnr(g:proj_running)
   endif
 
+  let l:first_row = 1
+  if tabpagenr('$') > 1
+    let l:first_row = 2
+  endif
+
   " Numbers of windows that view target buffer which we will delete.
   "  \ 'win_screenpos(v:val)[0] == 1 && !<SID>IsWindowSpecial(v:val)')
   let wnums = filter(range(1, winnr('$')),
-    \ 'win_screenpos(v:val)[0] == 1 && (v:val != ' .. l:proj_winnr ..')')
+    \ 'win_screenpos(v:val)[0] == ' .. l:first_row
+    \ .. ' && (v:val != ' .. l:proj_winnr ..')')
+
+  if empty(wnums)
+
+    return
+  endif
 
   let l:wcols = copy(wnums)->map({_, wnum -> winwidth(wnum)})
 
