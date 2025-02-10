@@ -12,7 +12,9 @@ FULLSCREEN TOGGLE HELP			*vim-fullscreen-toggle*
 ==============================================================================
 1. About This Plugin			*vim-fullscreen-toggle-about*
 
-Display-aware Vim fullscreen toggle.
+Display-aware Vim fullscreen toggle for `vim-gtk` and MacVim.
+
+Note this plugin does not work in Neovide or `nvim` (because |winpos| not implemented.)
 
 ==============================================================================
 2. Fullscreen Toggle Details		*vim-fullscreen-toggle-details*

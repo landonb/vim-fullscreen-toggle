@@ -5,7 +5,9 @@ Vim Fullscreen Toggle 💯
 About This Plugin
 =================
 
-Display-aware Vim fullscreen toggle.
+Display-aware Vim fullscreen toggle for ``vim-gtk`` and MacVim.
+
+Note this plugin does not work in Neovide or ``nvim`` (because ``:winpos`` not implemented.)
 
 Details
 =======

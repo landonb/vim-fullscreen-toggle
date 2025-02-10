@@ -332,7 +332,14 @@ function! s:ChangeDimensionsIfFsOrMostlyFsState(sticky_x, new_state) abort
     endif
 
     execute 'set columns=' .. l:vim_x .. ' lines=' .. l:vim_y
-    execute 'winpos ' .. l:xoff .. ' ' .. l:yoff
+    " Avoid `winpos` on Neovim/Neovide, otherwise, e.g.:
+    "   E319: The command is not available in this version: winpos 256 72
+    " Also getwinpos() returns [-1, -1]
+    " - Which means this plugin is useless in Neovide...
+    "   - I.e., :winpos only works in vim-gtk and MacVim.
+    if !has('nvim')
+      execute 'winpos ' .. l:xoff .. ' ' .. l:yoff
+    endif
   endif
 endfunction
 

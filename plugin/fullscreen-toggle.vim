@@ -22,6 +22,18 @@ let g:loaded_vim_fullscreen_toggle_on_startup = 1
 
 " -------------------------------------------------------------------
 
+" The :winpos (or getwinpos()) feature this plugin uses is not
+" availabing in Neovide or nvim.
+" - This plugin can still *resize* the window, but it cannot
+"   move it's x,y within the Desktop Environment.
+if has('nvim')
+  echom 'ALERT: vim-fullscreen-toggle only works in vim-gtk or MacVim, not nvim or Neovide'
+
+  finish
+endif
+
+" -------------------------------------------------------------------
+
 " Reminders:
 " - noremap does not resolve {rhs} characters (so don't use when
 "   <Plug> is in the {rhs}, or the <Plug> won't be resolved).
