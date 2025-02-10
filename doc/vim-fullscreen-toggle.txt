@@ -7,7 +7,7 @@ FULLSCREEN TOGGLE HELP			*vim-fullscreen-toggle*
 1. About				|vim-fullscreen-toggle-about|
 2. Details				|vim-fullscreen-toggle-details|
 3. Commands				|vim-fullscreen-toggle-commands|
-3. Disablement				|vim-fullscreen-toggle-disablement|
+3. Opt-in Maps				|vim-fullscreen-toggle-optin-maps|
 
 ==============================================================================
 1. About This Plugin			*vim-fullscreen-toggle-about*
@@ -71,15 +71,13 @@ Resize gVim/MacVim window~
 			but sets window width and position to right-half of display.
 
 ==============================================================================
-4. Fullscreen Toggle Disablement	*vim-fullscreen-toggle-disablement*
-Override~
+4. Fullscreen Toggle Opt-in Maps	*vim-fullscreen-toggle-optin-maps*
 
-By default, this plugin will define both `<F11>` and `<S-F11>` maps,
-and it'll run on startup (to set window dimensions to mostly fullscreen).
+By default, this plugin does nothing, and you'll need to create your own maps.
 
-If you'd like to define your own maps and to call resize on your own time,
-you can inhibit the default behavior by setting a global variable: >
+But if you'd like the plugin to define both `<F11>` and `<S-F11>` maps
+as described above, define the following variable from you `.vimrc`: >
 
-  let g:vim_fullscreen_toggle_disable = 1
+  let g:vim_fullscreen_toggle_create_maps = 1
 <
  vim:tw=78:ts=8:ft=help:norl:

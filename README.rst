@@ -58,16 +58,15 @@ Commands
                               display                       but sets window width and position to right-half of display.
 ===========================  ============================  ==============================================================================
 
-Override
-========
+Opt-in Maps
+===========
 
-By default, this plugin will define both ``<F11>`` and ``<S-F11>`` maps,
-and it'll run on startup (to set window dimensions to mostly fullscreen).
+By default, this plugin does nothing, and you'll need to create your own maps.
 
-If you'd like to define your own maps and to call resize on your own time,
-you can inhibit the default behavior by setting a global variable::
+But if you'd like the plugin to define both ``<F11>`` and ``<S-F11>`` maps
+as described above, define the following variable from you ``.vimrc``::
 
-  let g:vim_fullscreen_toggle_disable = 1
+  let g:vim_fullscreen_toggle_create_maps = 1
 
 Installation
 ============

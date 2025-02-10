@@ -44,7 +44,7 @@ function! s:CreateMapPlugs()
 endfunction
 
 function! s:CreateMaps()
-  if get(g:, 'vim_fullscreen_toggle_disable', 0)
+  if get(g:, 'vim_fullscreen_toggle_create_maps', 0)
 
     return
   endif
