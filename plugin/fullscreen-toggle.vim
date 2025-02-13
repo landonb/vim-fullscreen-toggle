@@ -10,15 +10,15 @@
 " - Via: https://github.com/embrace-vim/vim-source-reloader#↩️
 
 if expand('%:p') ==# expand('<sfile>:p')
-  unlet! g:loaded_vim_fullscreen_toggle_on_startup
+  unlet! g:loaded_vim_fullscreen_toggle_plugin
 endif
 
-if exists('g:loaded_vim_fullscreen_toggle_on_startup') || &cp
+if exists('g:loaded_vim_fullscreen_toggle_plugin') || &cp
 
   finish
 endif
 
-let g:loaded_vim_fullscreen_toggle_on_startup = 1
+let g:loaded_vim_fullscreen_toggle_plugin = 1
 
 " -------------------------------------------------------------------
 
